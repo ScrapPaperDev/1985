@@ -2,6 +2,16 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
+
+/ProjectFiles/1985_Unity5/Assets/Resource
+*.png
+*.gif
+*.midi
+*.mid
+*.wav
+*.ico
+
+
 /ProjectFiles/1985_Unity5/[Ll]ibrary/
 /ProjectFiles/1985_Unity5/[Tt]emp/
 /ProjectFiles/1985_Unity5/[Oo]bj/
