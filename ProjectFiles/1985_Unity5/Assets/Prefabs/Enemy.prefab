@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4740150792909296}
   - component: {fileID: 33533463357196746}
   - component: {fileID: 23768405732969190}
-  - component: {fileID: 114942198474538034}
+  - component: {fileID: 114752537248820402}
   - component: {fileID: 210481531337785062}
   - component: {fileID: 114294832533755284}
   - component: {fileID: 61941979433571686}
@@ -148,7 +148,7 @@ MonoBehaviour:
   explodePlayer: {fileID: 1888439507763688, guid: 85192e71fdfdb9340b13c160128765e3,
     type: 2}
   respawnOffset: 1
---- !u!114 &114942198474538034
+--- !u!114 &114752537248820402
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -156,10 +156,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1643301683154866}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e612a82cd508df24d8980f4cdf52c881, type: 3}
+  m_Script: {fileID: 11500000, guid: 01ba7c0967a2cf2439cb7195fb7e4e60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sprite: {fileID: 2800000, guid: e27b7f7ea6ccb3843ac59e0e4be2f887, type: 3}
+  sprite:
+  - {fileID: 2800000, guid: 18a823c1fe952024f8da240674f361ed, type: 3}
+  - {fileID: 2800000, guid: 2f11a7e6819f7e741bb10a83c3b98052, type: 3}
+  - {fileID: 2800000, guid: 9a20e8e67e6464d4189f21bcd02d5c76, type: 3}
+  loop: 1
+  frameRate: 0.1
 --- !u!210 &210481531337785062
 SortingGroup:
   m_ObjectHideFlags: 1

@@ -10,8 +10,8 @@ public class Island : MonoBehaviour
 	{
 		transform.position += new Vector3(0, -(Time.deltaTime * speed));
 
-		if(transform.position.y < -GameGlobals.yBounds - size)
-			transform.position = new Vector3(Random.Range(-GameGlobals.xBounds, GameGlobals.xBounds), GameGlobals.yBounds + size);
+		if(transform.position.y < GameGlobals.down - size)
+			transform.position = new Vector3(Random.Range(GameGlobals.left + transform.HalfWidth(), GameGlobals.right - transform.HalfWidth()), GameGlobals.up + size);
 
 	}
 }

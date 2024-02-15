@@ -10,6 +10,9 @@
 *.mid
 *.wav
 *.ico
+*.ogg
+*.pdf
+*.flp
 
 
 /ProjectFiles/1985_Unity5/[Ll]ibrary/

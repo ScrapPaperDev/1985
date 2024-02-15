@@ -14,31 +14,58 @@ public class Enemy : MonoBehaviour
 
 	[SerializeField] private float respawnOffset;
 
+	[SerializeField] private bool isEnemy2;
+
+	[SerializeField] private GameObject enemyBulletPrefab;
+
 	private void Update()
 	{
-		transform.position += new Vector3(0, -(speed * Time.deltaTime));
+		float speedo = isEnemy2 ? speed / 2 : speed;
 
-		if(transform.position.y < -GameGlobals.yBounds - respawnOffset)
-			transform.position = new Vector3(Random.Range(-GameGlobals.xBounds, GameGlobals.xBounds), GameGlobals.yBounds + respawnOffset);
+		transform.position += new Vector3(0, -(speedo * Time.deltaTime));
+
+		if(transform.position.y < GameGlobals.down - respawnOffset)
+			transform.position = new Vector3(Random.Range(GameGlobals.left + transform.HalfWidth(), GameGlobals.right - transform.HalfWidth()), GameGlobals.up + respawnOffset);
+
+
+		if(isEnemy2)
+		{
+			if(Time.frameCount % 30 == 0)
+			{
+				if(UnityEngine.Random.Range(0, 100) < 30)
+					Instantiate(enemyBulletPrefab, transform.position, Quaternion.identity);
+			}
+		}
 	}
 
 	private void OnTriggerEnter2D(Collider2D other)
 	{
 		if(other.GetComponent<PlayerController>() != null)
 		{
-			Instantiate(explodePlayer, transform.position, Quaternion.identity);
-			GameGlobals.PlaySound(clip2);
-			Destroy(gameObject);
-			Destroy(other.gameObject);
+			if(GameGlobals.SetAndCheckHealth(30))
+			{
+				Destroy(other.gameObject);
+				Instantiate(explodePlayer, transform.position, Quaternion.identity);
+				GameGlobals.PlaySound(clip2);
+			}
+			else
+			{
+				GameGlobals.PlaySound(clip);
+				Instantiate(explode, transform.position, Quaternion.identity);
+				transform.position = new Vector3(Random.Range(GameGlobals.left + transform.HalfWidth(), GameGlobals.right - transform.HalfWidth()), GameGlobals.up + respawnOffset);
+			}
 		}
 		else if(other.GetComponent<Bullet>() != null)
 		{
 			GameGlobals.PlaySound(clip);
 			Instantiate(explode, transform.position, Quaternion.identity);
 			Destroy(other.gameObject);
-			transform.position = new Vector3(Random.Range(-GameGlobals.xBounds, GameGlobals.xBounds), GameGlobals.yBounds + respawnOffset);
-			GameGlobals.score += 5;
+			transform.position = new Vector3(Random.Range(GameGlobals.left + transform.HalfWidth(), GameGlobals.right - transform.HalfWidth()), GameGlobals.up + respawnOffset);
+			int score = isEnemy2 ? 10 : 5;
+			GameGlobals.SetScore(score);
 		}
 	}
 }
+
+
 }

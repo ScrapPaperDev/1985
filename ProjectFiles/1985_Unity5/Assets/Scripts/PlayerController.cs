@@ -21,17 +21,22 @@ public class PlayerController : MonoBehaviour
 
 		Vector3 velo = new Vector3(x, y, 0) * (Time.deltaTime * speed);
 
-		if(player.transform.position.x < -GameGlobals.xBounds && velo.x < 0)
-			velo = new Vector3(0, velo.y, 0);
-		else if(player.transform.position.x > GameGlobals.xBounds && velo.x > 0)
+		if(player.position.x < GameGlobals.left + player.HalfWidth() && velo.x < 0)
 			velo = new Vector3(0, velo.y, 0);
 
-		if(player.transform.position.y < -GameGlobals.yBounds + panelSize && velo.y < 0)
-			velo = new Vector3(velo.x, 0, 0);
-		else if(player.transform.position.y > GameGlobals.yBounds && velo.y > 0)
+		if(player.position.x > GameGlobals.right - player.HalfWidth() && velo.x > 0)
+			velo = new Vector3(0, velo.y, 0);
+
+		if(player.position.y < GameGlobals.down + panelSize && velo.y < 0)
 			velo = new Vector3(velo.x, 0, 0);
 
-		player.transform.position += velo;
+		if(player.position.y > GameGlobals.up && velo.y > 0)
+			velo = new Vector3(velo.x, 0, 0);
+
+		if(y < 0)
+			velo = new Vector3(velo.x, velo.y / 2.0f, 0);
+
+		player.position += velo;
 
 		shootTimer += Time.deltaTime;
 
@@ -40,7 +45,7 @@ public class PlayerController : MonoBehaviour
 		{
 			if(shootTimer > shootThresh)
 			{
-				Instantiate(bullet,transform.position,Quaternion.identity);
+				Instantiate(bullet, transform.position, Quaternion.identity);
 				shootTimer = 0;
 			}
 		}

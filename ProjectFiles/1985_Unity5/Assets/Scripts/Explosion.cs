@@ -7,19 +7,22 @@ public class Explosion : MonoBehaviour
 {
 	public bool isPlayerExp;
 
-	private IEnumerator Start()
+
+
+	private void Awake()
 	{
 		if(isPlayerExp)
 		{
-			yield return new WaitForSeconds(2);
-			GameGlobals.ShowHighscoreTable();
-			UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+			GetComponent<SpriteFlipbook>().OnDone += () => 
+			{				
+				GameGlobals.LoseALife();
+				Destroy(gameObject);
+			};
 		}
 		else
 		{
-			Destroy(gameObject, 1.0f);
+			GetComponent<SpriteFlipbook>().OnDone += () => Destroy(gameObject);
 		}
-
 	}
 }
 }

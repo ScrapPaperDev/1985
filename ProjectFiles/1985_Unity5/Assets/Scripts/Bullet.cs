@@ -11,7 +11,7 @@ public class Bullet : MonoBehaviour
 	{
 		transform.position += new Vector3(0, speed * Time.deltaTime);
 
-		if(transform.position.y > GameGlobals.yBounds)
+		if(transform.position.y > GameGlobals.up)
 			Destroy(gameObject);
 	}
 }
