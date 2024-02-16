@@ -14,6 +14,8 @@ public class GameGlobals :MonoBehaviour
 
 	[SerializeField] private GameObject enemy;
 	[SerializeField] private GameObject enemy2;
+	[SerializeField] private GameObject enemy3;
+	[SerializeField] private GameObject enemy4;
 
 	[SerializeField] private float instOffset;
 
@@ -32,6 +34,8 @@ public class GameGlobals :MonoBehaviour
 	[SerializeField] private SpriteRenderer healthBar;
 
 	[SerializeField] private TextMesh scoreText;
+
+	public static Transform player;
 
 	public static bool SetAndCheckHealth(int amount)
 	{
@@ -80,6 +84,10 @@ public class GameGlobals :MonoBehaviour
 		lives = 3;
 		StartCoroutine(obj_controller_enemy());
 		StartCoroutine(obj_controller_enemy2());
+		StartCoroutine(obj_controller_enemy3());
+		StartCoroutine(obj_controller_enemy4());
+
+		player = FindObjectOfType<PlayerController>().transform;
 
 		Vector3 topLeft = new Vector3(0, Screen.height, 0);
 
@@ -116,9 +124,30 @@ public class GameGlobals :MonoBehaviour
 
 	private IEnumerator obj_controller_enemy2()
 	{
+		yield return new WaitForSeconds(12);
 		while(true)
 		{
 			Instantiate(enemy2, new Vector3(Random.Range(left, right), up - instOffset), Quaternion.identity);
+			yield return new WaitForSeconds(UnityEngine.Random.Range(12.0f, 16.0f));
+		}
+	}
+
+	private IEnumerator obj_controller_enemy3()
+	{
+		yield return new WaitForSeconds(25);
+		while(true)
+		{
+			Instantiate(enemy3, new Vector3(Random.Range(left, right), up - instOffset), Quaternion.identity);
+			yield return new WaitForSeconds(UnityEngine.Random.Range(12.0f, 16.0f));
+		}
+	}
+
+	private IEnumerator obj_controller_enemy4()
+	{
+		yield return new WaitForSeconds(60);
+		while(true)
+		{
+			Instantiate(enemy4, new Vector3(Random.Range(left, right), down - instOffset), Quaternion.identity);
 			yield return new WaitForSeconds(UnityEngine.Random.Range(12.0f, 16.0f));
 		}
 	}

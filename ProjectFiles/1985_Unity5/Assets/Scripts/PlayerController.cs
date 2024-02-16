@@ -45,8 +45,27 @@ public class PlayerController : MonoBehaviour
 		{
 			if(shootTimer > shootThresh)
 			{
-				Instantiate(bullet, transform.position, Quaternion.identity);
+				
+
+				if(GameGlobals.score > 999)
+				{
+					Instantiate(bullet, transform.position, Quaternion.identity);
+					Instantiate(bullet, transform.position + new Vector3(.5f, 0), Quaternion.identity);
+					Instantiate(bullet, transform.position + new Vector3(-.5f, 0), Quaternion.identity);
+				}
+				else if(GameGlobals.score > 399)
+				{
+					Instantiate(bullet, transform.position + new Vector3(.5f, 0), Quaternion.identity);
+					Instantiate(bullet, transform.position + new Vector3(-.5f, 0), Quaternion.identity);
+				}
+				else
+				{
+					Instantiate(bullet, transform.position, Quaternion.identity);
+				}
+
 				shootTimer = 0;
+
+
 			}
 		}
 	}

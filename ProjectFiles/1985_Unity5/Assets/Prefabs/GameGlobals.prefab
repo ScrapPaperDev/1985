@@ -161,7 +161,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 940652614b9a3da428f33170b2b9ffa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _xBounds: 8
-  _yBounds: 5
   source: {fileID: 82231452755952208}
   enemy: {fileID: 1643301683154866, guid: 2fda8392b019b4946860ba2f284e7f75, type: 2}
+  enemy2: {fileID: 1300798682410804, guid: 0f3d5a46b5de2d9418e140d307df89af, type: 2}
+  enemy3: {fileID: 1217339378284020, guid: d88259f944fc49240a997fd06b228bb8, type: 2}
+  enemy4: {fileID: 1734908934544538, guid: 5e53f023d8e20274baff6c9d0a453712, type: 2}
+  instOffset: -2.5
+  healthBar: {fileID: 0}
+  scoreText: {fileID: 0}
+  playerPrefab: {fileID: 1129913710600564, guid: 6ae1f612043540948aea9da62af8074f,
+    type: 2}

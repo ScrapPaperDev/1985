@@ -11,11 +11,33 @@ public class EnemyBullet : MonoBehaviour
 	[SerializeField] private GameObject explodePlayer;
 	[SerializeField] private  AudioClip clip2;
 
+	public bool isEnemy3Bullet;
+
+	private Vector3 dirToPlayer;
+
+	private void Start()
+	{
+		if(GameGlobals.player == null)
+		{
+			Destroy(gameObject);
+			return;
+		}
+
+		dirToPlayer = TransformExtend.GetDirectionTo(transform, GameGlobals.player);
+	}
+
 	private void Update()
 	{
-		transform.position += new Vector3(0, -speed * Time.deltaTime);
+		Vector3 velo = new Vector3(0, -speed * Time.deltaTime);
 
-		if(transform.position.y < GameGlobals.down)
+		if(!isEnemy3Bullet)
+			transform.position += velo;
+		else
+			transform.Translate(dirToPlayer * Time.deltaTime * speed);
+
+
+
+		if(transform.position.y < GameGlobals.down || transform.position.y > GameGlobals.up || transform.position.x < GameGlobals.left || transform.position.x > GameGlobals.right)
 			Destroy(gameObject);
 	}
 
@@ -23,7 +45,7 @@ public class EnemyBullet : MonoBehaviour
 	{
 		if(other.GetComponent<PlayerController>() != null)
 		{
-			if(GameGlobals.SetAndCheckHealth(30))
+			if(GameGlobals.SetAndCheckHealth(10))
 			{
 				Destroy(other.gameObject);
 				Instantiate(explodePlayer, transform.position, Quaternion.identity);
