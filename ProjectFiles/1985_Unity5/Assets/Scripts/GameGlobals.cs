@@ -1,5 +1,9 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using System;
+using Random = UnityEngine.Random;
 
 namespace _1985{
 
@@ -35,6 +39,8 @@ public class GameGlobals :MonoBehaviour
 
 	[SerializeField] private TextMesh scoreText;
 
+	[SerializeField] private SpriteRenderer[] liveIcons;
+
 	public static Transform player;
 
 	public static bool SetAndCheckHealth(int amount)
@@ -58,9 +64,19 @@ public class GameGlobals :MonoBehaviour
 
 	public GameObject playerPrefab;
 
+	public GameObject highScoreTable;
+
+	private static int[] scores;
+	private static string[] names;
+
+	public InputField[] scoreFields;
+
 	public static void LoseALife()
 	{
 		lives--;
+
+		for(int i = 2; i >= lives; i--)
+			instance.liveIcons[i].enabled = false;
 
 		SetAndCheckHealth(-100);
 
@@ -68,7 +84,33 @@ public class GameGlobals :MonoBehaviour
 		if(lives == 0)
 		{
 			//GameGlobals.ShowHighscoreTable();
-			UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+			instance.highScoreTable.SetActive(true);
+
+			scores[10] = score;
+
+			Array.Sort(scores, ((x, y) => y - x));
+
+
+			int scoreIndex = 0;
+
+			for(int i = 0; i < 10; i++)
+				instance.scoreFields[i].interactable = false;			
+
+			for(int i = 0; i < 10; i++)
+			{
+				if(score >= scores[i])
+				{
+					instance.scoreFields[i].interactable = true;
+					scoreIndex = i;
+					break;
+				}
+			}
+
+			for(int i = 0; i < 10; i++)
+				instance.scoreFields[i].text = scores[i].ToString();
+
+
+			instance.StartCoroutine(instance.HighScoreTable());
 		}
 		else
 		{
@@ -77,11 +119,34 @@ public class GameGlobals :MonoBehaviour
 
 	}
 
+	private IEnumerator HighScoreTable()
+	{
+		while(highScoreTable.activeInHierarchy)
+		{
+			if(Input.GetKeyDown(KeyCode.Escape))
+				highScoreTable.SetActive(false);
+			yield return null;
+		}
+
+		UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+	}
+
+	private void OnApplicationQuit()
+	{
+
+	}
+
 	private void Awake()
 	{
 		instance = this;
 		health = 100;
 		lives = 3;
+		score = 0;
+		instance.highScoreTable.SetActive(false);
+
+		if(scores == null)
+			scores = new int[11];
+
 		StartCoroutine(obj_controller_enemy());
 		StartCoroutine(obj_controller_enemy2());
 		StartCoroutine(obj_controller_enemy3());
@@ -114,6 +179,7 @@ public class GameGlobals :MonoBehaviour
 
 	private IEnumerator obj_controller_enemy()
 	{
+		yield return new WaitForSeconds(.5f);
 		while(true)
 		{
 			Instantiate(enemy, new Vector3(Random.Range(left, right), up - instOffset), Quaternion.identity);
@@ -161,10 +227,7 @@ public class GameGlobals :MonoBehaviour
 		instance.source.PlayOneShot(clip);
 	}
 
-	public static void ShowHighscoreTable()
-	{
-		//TODO: do it
-	}
+
 }
 
 }

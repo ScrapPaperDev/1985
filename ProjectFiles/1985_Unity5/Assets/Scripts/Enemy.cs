@@ -64,6 +64,8 @@ public class Enemy : MonoBehaviour
 		}
 	}
 
+	private bool hit;
+
 	private void OnTriggerEnter2D(Collider2D other)
 	{
 		if(other.GetComponent<PlayerController>() != null)
@@ -83,13 +85,23 @@ public class Enemy : MonoBehaviour
 		}
 		else if(other.GetComponent<Bullet>() != null)
 		{
+			if(hit)
+				return;
+
+			hit = true;
 			GameGlobals.PlaySound(clip);
 			Instantiate(explode, transform.position, Quaternion.identity);
 			Destroy(other.gameObject);
 			transform.position = new Vector3(Random.Range(GameGlobals.left + transform.HalfWidth(), GameGlobals.right - transform.HalfWidth()), GameGlobals.up + respawnOffset);
 			int score = isEnemy2 ? 10 : isEnemy3 ? 20 : isEnemy4 ? 40 : 5;
 			GameGlobals.SetScore(score);
+			Invoke("Unhit", .1f);
 		}
+	}
+
+	private void Unhit()
+	{
+		hit = false;
 	}
 }
 

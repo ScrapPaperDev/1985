@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
 
 				if(GameGlobals.score > 999)
 				{
-					Instantiate(bullet, transform.position, Quaternion.identity);
+					Instantiate(bullet, transform.position + new Vector3(0, .25f), Quaternion.identity);
 					Instantiate(bullet, transform.position + new Vector3(.5f, 0), Quaternion.identity);
 					Instantiate(bullet, transform.position + new Vector3(-.5f, 0), Quaternion.identity);
 				}
