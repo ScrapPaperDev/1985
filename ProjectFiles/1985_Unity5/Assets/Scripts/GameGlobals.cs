@@ -30,6 +30,8 @@ public class GameGlobals :MonoBehaviour
 	public static float right{ get; private set; }
 
 
+	public static bool modern;
+
 
 	public static int score;
 	public static int lives;
