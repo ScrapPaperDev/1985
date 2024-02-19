@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace _1985{
+namespace Unity1985{
 public class Enemy : MonoBehaviour
 {
 

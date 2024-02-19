@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace _1985{
+namespace Unity1985{
 public class SpriteFlipbook : MonoBehaviour
 {
 	private Renderer rend;

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace _1985{
+namespace Unity1985{
 public class Island : MonoBehaviour
 {
 	[SerializeField] private float speed;

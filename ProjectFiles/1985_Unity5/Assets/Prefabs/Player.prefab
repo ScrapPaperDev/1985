@@ -142,10 +142,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 4953037257964950}
-  speed: 6
-  panelSize: 2.2
   bullet: {fileID: 114860318588399830, guid: 69daeab0e4258d84d948724897177039, type: 2}
   shootThresh: 0.5
+  speed: 6
+  panelSize: 2.2
 --- !u!114 &114452394848846126
 MonoBehaviour:
   m_ObjectHideFlags: 1

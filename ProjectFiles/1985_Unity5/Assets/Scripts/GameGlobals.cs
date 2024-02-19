@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System;
 using Random = UnityEngine.Random;
 
-namespace _1985{
+namespace Unity1985{
 
 public class GameGlobals :MonoBehaviour
 {
