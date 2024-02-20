@@ -21,45 +21,27 @@ public class PlayerController : MonoBehaviour
 
 		shooter.shootThresh = shootThresh;
 		shooter.input = new UnityInputProvider();
-		shooter.shootSingle = ShootSingle;
-		shooter.shootDouble = ShootDouble;
-		shooter.shootTripple = ShootTripple;
 		shooter.timerProvider = new UnityTimeProvider();
+		shooter.transform = new UnityTransformProvider(player);
+		shooter.bulletInstantiater = new UnityInstantiater<Bullet>(bullet);
+		shooter.Bind(shootThresh);
 
 
 		movement = new PlayerMover();
 
 		movement.input = shooter.input;
 		movement.time = shooter.timerProvider;
-		movement.player = new UnityTransformProvider(player);
+		movement.player = shooter.transform;
 		movement.velo = new UnityVector3();
 		movement.speed = speed;
 		movement.panelSize = panelSize;
+
 	}
 
 	private void Update()
 	{
 		movement.Movement();
 		shooter.Shoot();
-	}
-
-
-	void ShootTripple()
-	{
-		Instantiate(bullet, transform.position + new Vector3(0, .25f), Quaternion.identity);
-		Instantiate(bullet, transform.position + new Vector3(.5f, 0), Quaternion.identity);
-		Instantiate(bullet, transform.position + new Vector3(-.5f, 0), Quaternion.identity);
-	}
-
-	void ShootDouble()
-	{
-		Instantiate(bullet, transform.position + new Vector3(.5f, 0), Quaternion.identity);
-		Instantiate(bullet, transform.position + new Vector3(-.5f, 0), Quaternion.identity);
-	}
-
-	void ShootSingle()
-	{
-		Instantiate(bullet, transform.position, Quaternion.identity);
 	}
 }
 }

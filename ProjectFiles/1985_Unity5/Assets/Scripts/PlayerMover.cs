@@ -11,26 +11,30 @@ public class PlayerMover
 	public ITimeProvider time;
 	public IVector3Provider velo;
 	public IInputProvider input;
+	public FakeVector3 currentVelo;
 
 	public void Movement()
 	{
-		velo.x = input.x * time.deltaTime * speed;
-		velo.y = input.y * time.deltaTime * speed;
+		
+		currentVelo.x = input.x * time.deltaTime * speed;
+		currentVelo.y = input.y * time.deltaTime * speed;
 
-		if(player.pos.x < GameGlobals.left + player.HalfWidth() && velo.x < 0)
-			velo.Set2(0, velo.y);
+		if(player.pos.x < GameGlobals.left + player.HalfWidth() && currentVelo.x < 0)
+			currentVelo.Set2(0, velo.y);
 
-		if(player.pos.x > GameGlobals.right - player.HalfWidth() && velo.x > 0)
-			velo.Set2(0, velo.y);
+		if(player.pos.x > GameGlobals.right - player.HalfWidth() && currentVelo.x > 0)
+			currentVelo.Set2(0, velo.y);
 
-		if(player.pos.y < GameGlobals.down + panelSize && velo.y < 0)
-			velo.Set2(velo.x, 0);
-		if(player.pos.y > GameGlobals.up && velo.y > 0)
-			velo.Set2(velo.x, 0);
-		if(velo.y < 0)
-			velo.Set2(velo.x, velo.y / 2.0f);
+		if(player.pos.y < GameGlobals.down + panelSize && currentVelo.y < 0)
+			currentVelo.Set2(currentVelo.x, 0);
+		if(player.pos.y > GameGlobals.up && currentVelo.y > 0)
+			currentVelo.Set2(currentVelo.x, 0);
+		if(currentVelo.y < 0)
+			currentVelo.Set2(currentVelo.x, currentVelo.y / 2.0f);
 
-		player.pos.AddTo(velo);
+		var finalVelo = currentVelo.AddTo(player.pos);
+		UnityEngine.Debug.Log(finalVelo.x);
+		player.pos = finalVelo;
 	}
 }
 }

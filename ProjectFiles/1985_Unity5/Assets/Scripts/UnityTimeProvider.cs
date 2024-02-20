@@ -29,13 +29,22 @@ public class UnityTransformProvider : ITransformProvider
 	public Disparity.IVector3Provider pos
 	{
 		get
-		{
-			transform.position = new Vector3(position.x, position.y, position.z);
+		{	
+			position.x = transform.position.x;
+			position.y = transform.position.y;
+			position.z = transform.position.z;
 			return  position;
 		}
+		set
+		{			
+			position.x = value.x;
+			position.y = value.y;
+			position.z = value.z;
+			transform.position = new Vector3(position.x, position.y, position.z);
+		}
 	}
-	public Disparity.IVector3Provider rot	{ get { return rotation; } }
-	public Disparity.IVector3Provider scale	{ get { return scl; } }
+	public Disparity.IVector3Provider rot	{ get { return rotation; } set { } }
+	public Disparity.IVector3Provider scale	{ get { return scl; } set { } }
 }
 
 public class UnityVector3 : IVector3Provider
@@ -48,9 +57,10 @@ public class UnityVector3 : IVector3Provider
 	public float z	{ get { return vec.z; } set { vec = new Vector3(vec.x, vec.y, value); } }
 
 
-	public void AddTo(IVector3Provider other)
+	public IVector3Provider AddTo(IVector3Provider other)
 	{
 		vec = new Vector3(vec.x + other.x, vec.y + other.y, vec.z + other.z);
+		return this;
 	}
 
 	public void Set2(float x, float y)
@@ -67,6 +77,30 @@ public class UnityInputProvider : IInputProvider
 	public bool shoot { get { return Input.GetKey(KeyCode.Space); } }
 	public bool pause	{ get { throw new NotImplementedException(); } }
 	
+}
+
+public class UnityInstantiater<T> : IInstantiater where T: UnityEngine.Object
+{
+	private T t;
+
+	public UnityInstantiater(T t)
+	{
+		this.t = t;
+	}
+
+	public void Instantiate(IVector3Provider pos)
+	{
+		UnityEngine.Object.Instantiate(t, pos.ToUnityV3(), Quaternion.identity);
+	}
+}
+
+
+public static class UnityHelpers
+{
+	public static Vector3 ToUnityV3(this IVector3Provider vec)
+	{
+		return new Vector3(vec.x, vec.y, vec.z);
+	}
 }
 
 

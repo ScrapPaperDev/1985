@@ -3,20 +3,22 @@ using Disparity;
 using Unity1985;
 
 namespace Humble1985{
-public class PlayerShooter
+public class PlayerShooter : IBindable
 {
 
 	private float shootTimer;
 	[Data] public float shootThresh;
 
 	public ITimeProvider timerProvider;
-	private IInstantiater bulletInstantiater;
-	private IGameObject<Unity1985.Bullet> bulletPrototype;
+	public IInstantiater bulletInstantiater;
 	public IInputProvider input;
+	public ITransformProvider transform;
 
-	public Action shootSingle;
-	public Action shootDouble;
-	public Action shootTripple;
+	public void Bind(params object[] o)
+	{
+		shootThresh = (float)o[0];
+
+	}
 
 	public void Shoot()
 	{
@@ -26,12 +28,11 @@ public class PlayerShooter
 			if(shootTimer > shootThresh)
 			{
 				if(Unity1985.GameGlobals.score > 999)
-					//bulletInstantiater.Instantiate(bulletPrototype, transform.pos);
-					shootTripple();
+					ShootTripple();
 				else if(Unity1985.GameGlobals.score > 399)
-					shootDouble();
+					ShootDouble();
 				else
-					shootSingle();
+					ShootSingle();
 
 				shootTimer = 0;
 			}
@@ -40,7 +41,20 @@ public class PlayerShooter
 
 	private void ShootSingle()
 	{
-		//bulletInstantiater.Instantiate(bulletPrototype,);
+		bulletInstantiater.Instantiate(transform.pos);
+	}
+
+	private void ShootTripple()
+	{
+		bulletInstantiater.Instantiate(transform.pos.AddTo(new FakeVector3(0, .25f)));
+		bulletInstantiater.Instantiate(transform.pos.AddTo(new FakeVector3(.5f, 0)));
+		bulletInstantiater.Instantiate(transform.pos.AddTo(new FakeVector3(-.5f, 0)));
+	}
+
+	private void ShootDouble()
+	{
+		bulletInstantiater.Instantiate(transform.pos.AddTo(new FakeVector3(.5f, 0)));
+		bulletInstantiater.Instantiate(transform.pos.AddTo(new FakeVector3(-.5f, 0)));
 	}
 }
 }
