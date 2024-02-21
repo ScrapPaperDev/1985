@@ -69,6 +69,15 @@ public class UnityVector3 : IVector3Provider
 	}
 }
 
+public class UnityRandom : IRandomProvider<float>
+{
+	public float RandomRange(float min, float max)
+	{
+		return UnityEngine.Random.Range(min, max);
+	}
+}
+
+
 
 public class UnityInputProvider : IInputProvider
 {
@@ -91,6 +100,20 @@ public class UnityInstantiater<T> : IInstantiater where T: UnityEngine.Object
 	public void Instantiate(IVector3Provider pos)
 	{
 		UnityEngine.Object.Instantiate(t, pos.ToUnityV3(), Quaternion.identity);
+	}
+}
+
+public class UnityDestroyer<T> : IDestroyable where T : UnityEngine.Object
+{
+	public T obj;
+	public UnityDestroyer(T go)
+	{
+		obj = go;
+	}
+
+	public void Destroy()
+	{
+		UnityEngine.Object.Destroy(obj);
 	}
 }
 

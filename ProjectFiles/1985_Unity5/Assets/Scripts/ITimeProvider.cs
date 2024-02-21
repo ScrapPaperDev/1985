@@ -10,6 +10,15 @@ public interface ITimeProvider
 	float deltaTime{ get; }
 }
 
+public interface IDestroyable
+{
+	void Destroy();
+}
+
+public interface IRandomProvider<T>
+{
+	T RandomRange(T min, T max);
+}
 
 public interface IInstantiater
 {
@@ -19,7 +28,6 @@ public interface IInstantiater
 public interface IGameObject<T>
 {
 	T obj{ get; }
-
 }
 
 public interface IInputProvider
@@ -35,7 +43,6 @@ public interface ITransformProvider
 	IVector3Provider pos{ get; set; }
 	IVector3Provider rot{ get; set; }
 	IVector3Provider scale{ get; set; }
-
 }
 
 public interface IVector3Provider : IAddable<IVector3Provider>
@@ -89,6 +96,14 @@ public struct FakeVector3 :IVector3Provider
 	//		return v1.AddTo(v2);
 	//	}
 
+}
+
+public static class Utils
+{
+	public static float HalfWidth(this Disparity.ITransformProvider t)
+	{
+		return t.scale.x / 2.0f;
+	}
 }
 
 public interface IBindable

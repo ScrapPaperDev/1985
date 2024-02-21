@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private float panelSize;
 
 	private PlayerShooter shooter;
-	private PlayerMover movement;
+	private IMover movement;
 
 	private void Awake()
 	{
@@ -26,21 +26,12 @@ public class PlayerController : MonoBehaviour
 		shooter.bulletInstantiater = new UnityInstantiater<Bullet>(bullet);
 		shooter.Bind(shootThresh);
 
-
-		movement = new PlayerMover();
-
-		movement.input = shooter.input;
-		movement.time = shooter.timerProvider;
-		movement.player = shooter.transform;
-		movement.velo = new UnityVector3();
-		movement.speed = speed;
-		movement.panelSize = panelSize;
-
+		movement = new PlayerMover(shooter.transform, shooter.timerProvider, shooter.input, speed, panelSize);
 	}
 
 	private void Update()
 	{
-		movement.Movement();
+		movement.Move();
 		shooter.Shoot();
 	}
 }

@@ -12,10 +12,7 @@ public static class Utils
 		return t.transform.localScale.x / 2.0f;
 	}
 
-	public static float HalfWidth(this Disparity.ITransformProvider t)
-	{
-		return t.scale.x / 2.0f;
-	}
+
 
 }
 
