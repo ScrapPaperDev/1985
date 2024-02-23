@@ -1,121 +1,210 @@
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 namespace Disparity
 {
 public class Coroutine
 {
-
-	private IScheduler scheduler;
-
 	private bool running;
+	private IScheduler scheduler;
+	private Stack<IEnumerator> stache;
 
-	private System.Collections.Generic.Stack<IEnumerator> currentCos;
+	public bool InProgress{ get { return stache.Count > 0; } }
+	public bool Suspended{ get { return stache.Count > 0 && !running; } }
 
-	private IEnumerator currentCo;
+	private bool waitTillNextFrame;
+	private bool initialFrame;
+
+	private bool waitForFrames;
+	private int framesToWait;
+	private int frameCount;
+
+	private bool waitForUnscaledTime;
+	private float timer;
+	private float timeToWait;
+
+	private bool waitForYield;
+	private Yield customYield;
 
 	public Coroutine()
 	{
-		currentCos = new System.Collections.Generic.Stack<IEnumerator>();	
+		stache = new Stack<IEnumerator>();	
 	}
 
 	public Coroutine(IScheduler scheduler)
 	{
+		stache = new Stack<IEnumerator>();	
 		this.scheduler = scheduler;
-		scheduler.OnUpdated += Update;
+		scheduler.OnUpdated += Tick;
+	}
+
+	public Coroutine(IScheduler scheduler, IEnumerator routine)
+	{
+		stache = new Stack<IEnumerator>();	
+		this.scheduler = scheduler;
+		scheduler.OnUpdated += Tick;
+		RunCoroutine(routine);
 	}
 
 	~Coroutine()
 	{
-		scheduler.OnUpdated -= Update;
+		scheduler.OnUpdated -= Tick;
 	}
 
 	public void RunCoroutine(IEnumerator co)
 	{	
-		currentCo = co;	
-		if(currentCos.Count > 0 && currentCos.Peek() != co)
-			currentCos.Push(co);
 		running = true;
 		while(co.MoveNext())
 		{
-			var cur = co.Current;
+			object cur = co.Current;
 
 			if(cur == null)
 			{				
 				waitTillNextFrame = true;
-				running = false;
+				SuspendCoroutine(co);
 				return;
 			}
 			else if(cur is float)
 			{
-				waitForTime = true;
-				running = false;
+				waitForUnscaledTime = true;
+				initialFrame = true;
 				timeToWait = (float)cur;
+				timer = 0;
+				SuspendCoroutine(co);
+				return;
+			}
+			else if(cur is int)
+			{
+				waitForFrames = true;
+				framesToWait = (int)cur;
+				SuspendCoroutine(co);
 				return;
 			}
 			else if(cur is IEnumerator)
 			{
+				SuspendCoroutine(co);
 				RunCoroutine((IEnumerator)cur);
+				return;
+			}
+			else if(cur is Yield)
+			{
+				SuspendCoroutine(co);
+				customYield = cur as Yield;
 				return;
 			}
 		}
 		running = false;
-		if(currentCos.Count > 0)
-			currentCos.Pop();
-		currentCo = null;
 	}
 
-	public void ResumeCoroutine()
+	private void SuspendCoroutine(IEnumerator current)
 	{
-		
+		running = false;
+		stache.Push(current);
 	}
 
-	private bool waitTillNextFrame;
-	private bool waitForTime;
-	private int framesSinceLastWait;
-	private int frameCount;
-	private float timer;
-	private float timeToWait;
-
-	public void Update()
+	private void ResumeCoroutine()
 	{
-		if(currentCo == null)
+		if(stache.Count == 0)
+		{
+			UnityEngine.Debug.LogError("All coroutines have been finished but is trying to resume?");
 			return;
+		}
 
-		UnityEngine.Debug.Log("Update: " + frameCount);
-		frameCount++;
+		RunCoroutine(stache.Pop());
+	}
 
-		if(running)
-			return;				
+
+	private void Tick(float delta)
+	{
+//		UnityEngine.Debug.Log("tick: " + frameCount + " / " + delta);
+//		frameCount++;
 
 		if(waitTillNextFrame)
 		{
 			waitTillNextFrame = false;
-			RunCoroutine(currentCo);
-			return;
+			ResumeCoroutine();
 		}
-		//This would be unscaled time.
-		//For something like wait for seconds, do time * fps and count the frames
-		else if(waitForTime)
+		else if(waitForUnscaledTime)
 		{
-			timer += UnityEngine.Time.deltaTime;
+			if(initialFrame)
+			{
+				initialFrame = false;
+				return;
+			}
+
+			timer += delta;
 
 			if(timer >= timeToWait)
 			{
-				waitForTime = false;
-				RunCoroutine(currentCo);
-				return;
+				waitForUnscaledTime = false;
+				ResumeCoroutine();
 			}
+		}
+		else if(waitForFrames)
+		{
+			if(frameCount == framesToWait)
+			{
+				waitForFrames = false;
+				ResumeCoroutine();
+			}
+		}
+		else if(waitForYield)
+		{
+			if(customYield.WaitIsOver())
+			{
+				waitForYield = false;
+				ResumeCoroutine();
+			}
+		}
+	}
+
+	//TODO: move to extensions
+	public static bool TryPeek<T>(Stack<T> col, out T obj)
+	{
+		if(col == null || col.Count == 0)
+		{
+			obj = default(T);
+			return false;
+		}
+		else
+		{
+			obj = col.Peek();
+			return true;
 		}
 	}
 }
 
+public abstract class Yield
+{
+	public abstract bool WaitIsOver();
+}
+
+public class WaitForSeconds : Yield
+{
+	private readonly int frameCount;
+	private int framesEllapsed;
+	public WaitForSeconds(float time, int applicationFPS)
+	{
+		frameCount = (int)(time * applicationFPS);
+	}
 
 
-public interface IScheduler
+	public override bool WaitIsOver()
+	{
+		if(framesEllapsed == frameCount)
+			return true;
+
+		framesEllapsed++;
+		return false;
+	}
+}
+
+
+public interface IScheduler : ITimeProvider
 {
 	void Update();
-	event Action OnUpdated;
+	event Action<float> OnUpdated;
 }
 
 
