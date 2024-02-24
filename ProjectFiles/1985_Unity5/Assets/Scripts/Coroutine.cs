@@ -4,14 +4,16 @@ using System.Collections.Generic;
 
 namespace Disparity
 {
-public class Coroutine
+/// No reason these cant be pooled and reused. Keep that in mind for later.
+public class Coroutine : IDisposable
 {
 	private bool running;
 	private IScheduler scheduler;
 	private Stack<IEnumerator> stache;
 
-	public bool InProgress{ get { return stache.Count > 0; } }
+	public bool InProgress{ get { return stache.Count > 0 && running; } }
 	public bool Suspended{ get { return stache.Count > 0 && !running; } }
+	public bool done{ get; private set; }
 
 	private bool waitTillNextFrame;
 	private bool initialFrame;
@@ -26,11 +28,6 @@ public class Coroutine
 
 	private bool waitForYield;
 	private Yield customYield;
-
-	public Coroutine()
-	{
-		stache = new Stack<IEnumerator>();	
-	}
 
 	public Coroutine(IScheduler scheduler)
 	{
@@ -49,12 +46,13 @@ public class Coroutine
 
 	~Coroutine()
 	{
-		scheduler.OnUpdated -= Tick;
+		Dispose();
 	}
 
 	public void RunCoroutine(IEnumerator co)
 	{	
 		running = true;
+
 		while(co.MoveNext())
 		{
 			object cur = co.Current;
@@ -91,10 +89,19 @@ public class Coroutine
 			{
 				SuspendCoroutine(co);
 				customYield = cur as Yield;
+				waitForYield = true;
 				return;
 			}
 		}
+
+		if(stache.Count > 0)
+		{
+			RunCoroutine(stache.Pop());
+			return;
+		}
+
 		running = false;
+		Dispose();
 	}
 
 	private void SuspendCoroutine(IEnumerator current)
@@ -159,6 +166,15 @@ public class Coroutine
 		}
 	}
 
+	public void Dispose()
+	{
+		done = true;
+		if(scheduler != null)
+			scheduler.OnUpdated -= Tick;
+	}
+
+
+
 	//TODO: move to extensions
 	public static bool TryPeek<T>(Stack<T> col, out T obj)
 	{
@@ -173,6 +189,8 @@ public class Coroutine
 			return true;
 		}
 	}
+
+		
 }
 
 public abstract class Yield
@@ -180,20 +198,25 @@ public abstract class Yield
 	public abstract bool WaitIsOver();
 }
 
+//TODO: test in frame rate fluctuating settings and see if consistnent. May need to create a "delta" based on target and actual
 public class WaitForSeconds : Yield
 {
 	private readonly int frameCount;
 	private int framesEllapsed;
 	public WaitForSeconds(float time, int applicationFPS)
 	{
-		frameCount = (int)(time * applicationFPS);
+		frameCount = ((int)(time * (float)applicationFPS)) + 1;
 	}
 
 
 	public override bool WaitIsOver()
 	{
 		if(framesEllapsed == frameCount)
+		{
+			framesEllapsed = 0;
 			return true;
+		}
+			
 
 		framesEllapsed++;
 		return false;

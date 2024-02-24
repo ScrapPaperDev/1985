@@ -106,6 +106,12 @@ public static class Utils
 	}
 }
 
+public static class Settings
+{
+	public static Func<int> TargetFrameRate;
+}
+
+
 public interface IBindable
 {
 	void Bind(params object[] o);
