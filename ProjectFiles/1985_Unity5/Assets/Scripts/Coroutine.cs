@@ -1,3 +1,4 @@
+#define NET_3_5_SUBSET
 using System.Collections;
 using System;
 using System.Collections.Generic;
@@ -178,6 +179,7 @@ public class Coroutine : IDisposable
 	//TODO: move to extensions
 	public static bool TryPeek<T>(Stack<T> col, out T obj)
 	{
+#if NET_3_5_SUBSET
 		if(col == null || col.Count == 0)
 		{
 			obj = default(T);
@@ -188,6 +190,9 @@ public class Coroutine : IDisposable
 			obj = col.Peek();
 			return true;
 		}
+#else
+		return col.TryPeek(out obj);
+#endif
 	}
 
 		
@@ -203,6 +208,13 @@ public class WaitForSeconds : Yield
 {
 	private readonly int frameCount;
 	private int framesEllapsed;
+
+	public WaitForSeconds(float time)
+	{
+		int applicationFPS = Disparity.Settings.TargetFrameRate();
+		frameCount = ((int)(time * (float)applicationFPS)) + 1;
+	}
+
 	public WaitForSeconds(float time, int applicationFPS)
 	{
 		frameCount = ((int)(time * (float)applicationFPS)) + 1;

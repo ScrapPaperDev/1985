@@ -5,34 +5,61 @@ using UnityEngine;
 namespace Unity1985{
 public class SpriteFlipbook : MonoBehaviour
 {
-	private Renderer rend;
-	private MaterialPropertyBlock prop;
-
 	[SerializeField] private Texture2D[] sprite;
-
-	private int id;
-
 	[SerializeField] private bool loop;
 	[SerializeField] private float frameRate = .2f;
 
-	public event Action OnDone;
+	private ISpriteTextureUpdater<Texture2D> spriteUpdater;
+	public Flipbook flipBook{ get; private set; }
 
 	private void Awake()
-	{
-		OnValidate();
-		id = Shader.PropertyToID("_MainTex");
+	{		
+		spriteUpdater = new UnitySpriteTexture(GetComponent<Renderer>());
+		flipBook = new Flipbook(frameRate, sprite.Length, Flip, loop);
+		StartCoroutine(flipBook.Flip());
 	}
 
-	private IEnumerator Start()
+	private void OnValidate()
 	{
-		var wait = new WaitForSeconds(frameRate);
+		new UnitySpriteTexture(GetComponent<Renderer>()).UpdateSprite(sprite[0]);
+	}
+
+	private void Flip(int i)
+	{
+		spriteUpdater.UpdateSprite(sprite[i]);
+	}
+
+}
+
+public class Flipbook
+{
+
+	private readonly float frameRate;
+	private readonly int length;
+
+	private Action<int> OnFrameAdvance;
+	public event Action OnDone;
+
+	private readonly bool loop;
+
+	public Flipbook(float fr, int length, Action<int> frameAdvance, bool loop = true)
+	{
+		frameRate = fr;
+		OnFrameAdvance = frameAdvance;
+		this.length = length;
+		this.loop = loop;
+
+	}
+
+	public IEnumerator Flip()
+	{
+		//TODO: make disparity coroutine manager so we can skip all the boilerplate
+		var wait = new UnityEngine.WaitForSeconds(frameRate);
 		do
 		{
-			for(int i = 0; i < sprite.Length; i++)
-			{				
-				
-				prop.SetTexture(id, sprite[i]);
-				rend.SetPropertyBlock(prop);
+			for(int i = 0; i < length; i++)
+			{	
+				OnFrameAdvance(i);
 				yield return wait;	
 			}
 		}
@@ -42,16 +69,12 @@ public class SpriteFlipbook : MonoBehaviour
 			OnDone();
 	}
 
-	private void OnValidate()
-	{
-		if(rend == null)
-			rend = GetComponent<Renderer>();
+}
 
-		prop = new MaterialPropertyBlock();
-		rend.GetPropertyBlock(prop);
-		prop.SetTexture("_MainTex", sprite[0]);
-		rend.SetPropertyBlock(prop);
-	}
+// aync task converter??
+public interface IAsyncMethodProvider
+{
+	IEnumerator AyncMethod();
 }
 
 }

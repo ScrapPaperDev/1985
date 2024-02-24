@@ -13,7 +13,7 @@ public class Explosion : MonoBehaviour
 	{
 		if(isPlayerExp)
 		{
-			GetComponent<SpriteFlipbook>().OnDone += () => 
+			GetComponent<SpriteFlipbook>().flipBook.OnDone += () => 
 			{				
 				GameGlobals.LoseALife();
 				Destroy(gameObject);
@@ -21,7 +21,7 @@ public class Explosion : MonoBehaviour
 		}
 		else
 		{
-			GetComponent<SpriteFlipbook>().OnDone += () => Destroy(gameObject);
+			GetComponent<SpriteFlipbook>().flipBook.OnDone += () => Destroy(gameObject);
 		}
 	}
 }

@@ -13,14 +13,15 @@ public class SpriteTexture : MonoBehaviour
 	private void OnValidate()
 	{
 		var rend = GetComponent<Renderer>();
-		new UnitySpriteTexture(rend,sprite).UpdateSprite();
+		new UnitySpriteTexture(rend, sprite).UpdateSprite();
 	}
 }
 
-public interface ISpriteTextureUpdater
+public interface ISpriteTextureUpdater<T>
 {
-	void UpdateSprite();
+	void UpdateSprite(T t);
 }
+
 
 // Only need this if changing sprites is logical in the game. for now its just an editor time thing.
 public class HumbleSpriteTexture
@@ -28,11 +29,17 @@ public class HumbleSpriteTexture
 	
 }
 
-public class UnitySpriteTexture : ISpriteTextureUpdater
+public class UnitySpriteTexture : ISpriteTextureUpdater<Texture2D>
 {
 	private Texture2D sprite;
 	private Renderer rend;
 	private MaterialPropertyBlock prop;
+
+	public UnitySpriteTexture(Renderer rend)
+	{
+		this.rend = rend;
+		prop = new MaterialPropertyBlock();
+	}
 
 	public UnitySpriteTexture(Renderer rend, Texture2D sprite)
 	{
@@ -46,6 +53,12 @@ public class UnitySpriteTexture : ISpriteTextureUpdater
 		rend.GetPropertyBlock(prop);
 		prop.SetTexture("_MainTex", sprite);
 		rend.SetPropertyBlock(prop);
+	}
+
+	public void UpdateSprite(Texture2D spr)
+	{
+		sprite = spr;
+		UpdateSprite();
 	}
 
 }

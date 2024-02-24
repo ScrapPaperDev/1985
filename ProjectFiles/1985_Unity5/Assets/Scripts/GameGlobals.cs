@@ -140,6 +140,9 @@ public class GameGlobals :MonoBehaviour
 
 	private void Awake()
 	{
+		Application.targetFrameRate = 60;
+		Disparity.Settings.TargetFrameRate = () => Application.targetFrameRate;
+
 		instance = this;
 		health = 100;
 		lives = 3;
