@@ -236,9 +236,8 @@ public class WaitForSeconds : Yield
 }
 
 
-public interface IScheduler : ITimeProvider
+public interface IScheduler
 {
-	void Update();
 	event Action<float> OnUpdated;
 }
 

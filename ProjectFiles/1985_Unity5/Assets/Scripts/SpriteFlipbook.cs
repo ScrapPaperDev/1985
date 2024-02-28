@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using Disparity;
+using Disparity.Unity;
 
 namespace Unity1985{
 public class SpriteFlipbook : MonoBehaviour
@@ -12,11 +14,23 @@ public class SpriteFlipbook : MonoBehaviour
 	private ISpriteTextureUpdater<Texture2D> spriteUpdater;
 	public Flipbook flipBook{ get; private set; }
 
+	private Disparity.Coroutine co;
+
 	private void Awake()
 	{		
 		spriteUpdater = new UnitySpriteTexture(GetComponent<Renderer>());
 		flipBook = new Flipbook(frameRate, sprite.Length, Flip, loop);
-		StartCoroutine(flipBook.Flip());
+
+	}
+
+	private void Start()
+	{
+		co = new Disparity.Coroutine(UnityScheduler.instance, flipBook.Flip());
+	}
+
+	private void OnDestroy()
+	{
+		co.Dispose();
 	}
 
 	private void OnValidate()
@@ -28,53 +42,5 @@ public class SpriteFlipbook : MonoBehaviour
 	{
 		spriteUpdater.UpdateSprite(sprite[i]);
 	}
-
 }
-
-public class Flipbook
-{
-
-	private readonly float frameRate;
-	private readonly int length;
-
-	private Action<int> OnFrameAdvance;
-	public event Action OnDone;
-
-	private readonly bool loop;
-
-	public Flipbook(float fr, int length, Action<int> frameAdvance, bool loop = true)
-	{
-		frameRate = fr;
-		OnFrameAdvance = frameAdvance;
-		this.length = length;
-		this.loop = loop;
-
-	}
-
-	public IEnumerator Flip()
-	{
-		//TODO: make disparity coroutine manager so we can skip all the boilerplate
-		var wait = new UnityEngine.WaitForSeconds(frameRate);
-		do
-		{
-			for(int i = 0; i < length; i++)
-			{	
-				OnFrameAdvance(i);
-				yield return wait;	
-			}
-		}
-		while(loop);
-
-		if(OnDone != null)
-			OnDone();
-	}
-
-}
-
-// aync task converter??
-public interface IAsyncMethodProvider
-{
-	IEnumerator AyncMethod();
-}
-
 }
