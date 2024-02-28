@@ -58,19 +58,17 @@ public class OffscreenDestroyable :IOffscreenable
 public class RespawnOffscreen :Humble1985.IOffscreenable
 {
 	private ITransformProvider transform;
-	private IRandomProvider<float> rand;
-
-	private float offset;
 
 	//-- As in when this object is beyond this side, do something.
 	private Sides side;
 
+	private RandomRespawner respawner;
+
 	public RespawnOffscreen(ITransformProvider t, IRandomProvider<float> ran, float offset, Sides side)
 	{
 		transform = t;
-		rand = ran;
-		this.offset = offset;
 		this.side = side;
+		respawner = new RandomRespawner(t, ran, offset, side);
 	}
 
 	public void CheckOffscreen()
@@ -88,21 +86,43 @@ public class RespawnOffscreen :Humble1985.IOffscreenable
 		}
 
 		if(offscreen)
+			respawner.Respawn();
+
+	}
+}
+
+public class RandomRespawner
+{
+	private ITransformProvider transform;
+	private IRandomProvider<float> rand;
+
+	private float offset;
+
+	//-- As in when this object is beyond this side, do something.
+	private Sides side;
+
+	public RandomRespawner(ITransformProvider t, IRandomProvider<float> ran, float offset, Sides side)
+	{
+		transform = t;
+		rand = ran;
+		this.offset = offset;
+		this.side = side;
+	}
+
+	public void Respawn()
+	{
+		float newSpawn = 0.0f;
+
+		switch(side)
 		{
-			float newSpawn = 0.0f;
-
-			switch(side)
-			{
-				case Sides.Up:
-					newSpawn = Unity1985.GameGlobals.down - transform.HalfWidth() - offset;
-					break;
-				case Sides.Down:
-					newSpawn = Unity1985.GameGlobals.up + transform.HalfWidth() + offset;
-					break;
-			}
-			transform.pos = new FakeVector3(rand.RandomRange(Unity1985.GameGlobals.left + transform.HalfWidth(), Unity1985.GameGlobals.right - transform.HalfWidth()), newSpawn);			
+			case Sides.Up:
+				newSpawn = Unity1985.GameGlobals.down - transform.HalfWidth() - offset;
+				break;
+			case Sides.Down:
+				newSpawn = Unity1985.GameGlobals.up + transform.HalfWidth() + offset;
+				break;
 		}
-
+		transform.pos = new FakeVector3(rand.RandomRange(Unity1985.GameGlobals.left + transform.HalfWidth(), Unity1985.GameGlobals.right - transform.HalfWidth()), newSpawn);			
 	}
 }
 

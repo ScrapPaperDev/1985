@@ -24,17 +24,20 @@ public class Enemy : MonoBehaviour
 	[SerializeField] private int points;
 
 	private EnemyPlane plane;
+	private UnityDestroyer<GameObject> dest;
 
 	private void Awake()
 	{		
 		var ut = new UnityTimeProvider();
 		var t = new UnityTransformProvider(transform);
-		var o = new RespawnOffscreen(t, new UnityRandom(), respawnOffset, side);
 		var tp = new UnityTransformProvider(transform);
+		dest = new UnityDestroyer<GameObject>(null);
 
-		plane = new EnemyPlane(tp, o, enemyType, new UnityTimeProvider(), speed);
+		plane = new EnemyPlane(tp, enemyType, new UnityTimeProvider(), speed, respawnOffset, new UnityRandom(), side, dest);
 
 		plane.bullets = new UnityInstantiater<GameObject>(enemyBulletPrefab);
+		plane.explosion = new UnityInstantiater<GameObject>(explode);
+		plane.explosion2 = new UnityInstantiater<GameObject>(explodePlayer);
 		
 	}
 
@@ -49,18 +52,8 @@ public class Enemy : MonoBehaviour
 	{
 		if(other.GetComponent<PlayerController>() != null)
 		{
-			if(GameGlobals.SetAndCheckHealth(30))
-			{
-				Destroy(other.gameObject);
-				Instantiate(explodePlayer, transform.position, Quaternion.identity);
-				GameGlobals.PlaySound(clip2);
-			}
-			else
-			{
-				GameGlobals.PlaySound(clip);
-				Instantiate(explode, transform.position, Quaternion.identity);
-				transform.position = new Vector3(Random.Range(GameGlobals.left + transform.HalfWidth(), GameGlobals.right - transform.HalfWidth()), GameGlobals.up + respawnOffset);
-			}
+			dest.obj = other.gameObject;
+			plane.HitPlayer();
 		}
 		else if(other.GetComponent<Bullet>() != null)
 		{
@@ -92,11 +85,16 @@ public sealed class EnemyPlane
 	private IOffscreenable offscreener;
 	private EnemyBehaviour behaviour;
 	public IInstantiater bullets;
+	public IInstantiater explosion;
+	public IInstantiater explosion2;
+	private RandomRespawner respawner;
+	private IDestroyable destroyer;
+	private ITransformProvider transform;
 
-	public EnemyPlane(ITransformProvider t, IOffscreenable off, int type, ITimeProvider time, float speed)
+	public EnemyPlane(ITransformProvider t, int type, ITimeProvider time, float speed, float offset, IRandomProvider<float> rand, Sides side, IDestroyable dest)
 	{		
-		offscreener = off;
-
+		this.offset = offset;
+		transform = t;
 
 		float speedo = -(type == 1 ? speed / 2 : speed);
 		if(type == 3)
@@ -117,6 +115,10 @@ public sealed class EnemyPlane
 				behaviour = new EnemyBehaviour();
 				break;
 		}
+
+		respawner = new RandomRespawner(t, rand, offset, side);
+		offscreener = new RespawnOffscreen(t, rand, offset, side);
+		destroyer = dest;
 	}
 
 	public void Fly()
@@ -124,6 +126,22 @@ public sealed class EnemyPlane
 		mover.Move();
 		offscreener.CheckOffscreen();
 		behaviour.Behave();
+	}
+
+	public void HitPlayer()
+	{
+		if(GameGlobals.SetAndCheckHealth(30))
+		{
+			destroyer.Destroy();
+			explosion2.Instantiate(transform.pos);
+			//GameGlobals.PlaySound(clip2);
+		}
+		else
+		{
+			//GameGlobals.PlaySound(clip);
+			explosion.Instantiate(transform.pos);
+			respawner.Respawn();
+		}
 	}
 
 }
