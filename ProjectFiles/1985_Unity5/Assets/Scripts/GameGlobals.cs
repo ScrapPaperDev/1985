@@ -48,7 +48,7 @@ public class GameGlobals :MonoBehaviour
 	public static bool SetAndCheckHealth(int amount)
 	{
 		health -= amount;
-		float i = ((float)health).Normalize(100.0f);
+		float i = (float)health / 100.0f;
 		instance.healthBar.transform.parent.localScale = new Vector3(i, instance.healthBar.transform.parent.localScale.y, 1);
 		instance.healthBar.color = Color.Lerp(Color.red, Color.yellow, i);
 

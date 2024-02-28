@@ -23,7 +23,7 @@ public class EnemyBullet : MonoBehaviour
 			return;
 		}
 
-		dirToPlayer = TransformExtend.GetDirectionTo(transform, GameGlobals.player);
+		dirToPlayer = GameGlobals.player.position - transform.position;
 	}
 
 	private void Update()
