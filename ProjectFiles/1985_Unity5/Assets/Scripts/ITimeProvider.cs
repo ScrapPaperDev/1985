@@ -45,6 +45,8 @@ public interface ITransformProvider
 	IVector3Provider scale{ get; set; }
 }
 
+//-- I think we should get rid of this and just focus on FakeVector3 implementation and instead abstract away the "adapters"
+//-- Or rather just work with fake vectors in the frame work and create adapters for engine implementations
 public interface IVector3Provider : IAddable<IVector3Provider>
 {
 	float x{ get; set; }

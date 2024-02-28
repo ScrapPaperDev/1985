@@ -1355,8 +1355,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rend: {fileID: 652133626}
-  vec: {x: 32, y: 32, z: 1, w: 0}
   speed: 1
+  scale: {x: 32, y: 32, z: 0, w: 0}
 --- !u!23 &652133626
 MeshRenderer:
   m_ObjectHideFlags: 0
