@@ -161,6 +161,11 @@ public static class Settings
 	public static Func<int> TargetFrameRate;
 }
 
+public static class Environment
+{
+	public static float deltaTime;
+}
+
 
 public interface IBindable
 {
@@ -179,7 +184,7 @@ public class SimpleSerializedData
 
 	public IEnumerable GetData()
 	{
-		var dat = data.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+		var dat = data.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 		foreach(object item in dat)
 			yield return item;
 	}

@@ -14,7 +14,7 @@ public class Island : MonoBehaviour
 	{
 		var t = new UnityTransformProvider(transform);
 		mover = new Mover(-speed, t, new UnityTimeProvider());
-		offscreener = new RespawnOffscreen(t, new UnityRandom(), offset);
+		offscreener = new RespawnOffscreen(t, new UnityRandom(), offset, Sides.Down);
 	}
 
 	private void Update()

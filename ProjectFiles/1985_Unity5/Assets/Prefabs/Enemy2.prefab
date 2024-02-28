@@ -158,16 +158,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a29122aab005bd94f99f90f40e0eba5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 4
   clip: {fileID: 8300000, guid: ab0d7b35f18c88e4da3e1ae566766b1a, type: 3}
   clip2: {fileID: 8300000, guid: b27c2f09a81658247842f6fc1e00c6b2, type: 3}
   explode: {fileID: 1681690343607560, guid: 6cac48178eb767d45877d8d6c17f0f63, type: 2}
   explodePlayer: {fileID: 1888439507763688, guid: 85192e71fdfdb9340b13c160128765e3,
     type: 2}
+  speed: 4
+  enemyType: 1
+  side: 1
   respawnOffset: 1
-  isEnemy2: 1
   enemyBulletPrefab: {fileID: 1398225275279310, guid: 93ea3524e0f1f0547973a3355b42600e,
     type: 2}
+  points: 10
 --- !u!210 &210052439842842836
 SortingGroup:
   m_ObjectHideFlags: 1

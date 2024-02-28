@@ -77,6 +77,14 @@ public class UnityRandom : IRandomProvider<float>
 	}
 }
 
+public class UnityRandomInt : IRandomProvider<int>
+{
+	public int RandomRange(int min, int max)
+	{
+		return UnityEngine.Random.Range(min, max);
+	}
+}
+
 
 
 public class UnityInputProvider : IInputProvider

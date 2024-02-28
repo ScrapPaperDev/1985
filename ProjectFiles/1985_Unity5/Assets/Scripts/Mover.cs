@@ -62,18 +62,56 @@ public class RespawnOffscreen :Humble1985.IOffscreenable
 
 	private float offset;
 
-	public RespawnOffscreen(ITransformProvider t, IRandomProvider<float> ran, float offset)
+	//-- As in when this object is beyond this side, do something.
+	private Sides side;
+
+	public RespawnOffscreen(ITransformProvider t, IRandomProvider<float> ran, float offset, Sides side)
 	{
 		transform = t;
 		rand = ran;
 		this.offset = offset;
+		this.side = side;
 	}
 
 	public void CheckOffscreen()
 	{
-		if(transform.pos.y < Unity1985.GameGlobals.down - transform.HalfWidth())
-			transform.pos = new FakeVector3(rand.RandomRange(Unity1985.GameGlobals.left + transform.HalfWidth(), Unity1985.GameGlobals.right - transform.HalfWidth()), Unity1985.GameGlobals.up + transform.HalfWidth() + offset);
+		bool offscreen = false;
+
+		switch(side)
+		{
+			case Sides.Up:
+				offscreen = transform.pos.y > Unity1985.GameGlobals.up + transform.HalfWidth();
+				break;
+			case Sides.Down:
+				offscreen = transform.pos.y < Unity1985.GameGlobals.down - transform.HalfWidth();
+				break;
+		}
+
+		if(offscreen)
+		{
+			float newSpawn = 0.0f;
+
+			switch(side)
+			{
+				case Sides.Up:
+					newSpawn = Unity1985.GameGlobals.down - transform.HalfWidth() - offset;
+					break;
+				case Sides.Down:
+					newSpawn = Unity1985.GameGlobals.up + transform.HalfWidth() + offset;
+					break;
+			}
+			transform.pos = new FakeVector3(rand.RandomRange(Unity1985.GameGlobals.left + transform.HalfWidth(), Unity1985.GameGlobals.right - transform.HalfWidth()), newSpawn);			
+		}
+
 	}
+}
+
+public enum Sides
+{
+	Up,
+	Down,
+	Left,
+	Right
 }
 
 
