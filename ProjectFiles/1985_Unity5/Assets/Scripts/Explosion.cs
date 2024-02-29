@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Disparity;
+using Disparity.Unity;
 using UnityEngine;
 
 namespace Unity1985{
@@ -7,22 +10,23 @@ public class Explosion : MonoBehaviour
 {
 	public bool isPlayerExp;
 
-
-
 	private void Awake()
 	{
-		if(isPlayerExp)
-		{
-			GetComponent<SpriteFlipbook>().flipBook.OnDone += () => 
-			{				
-				GameGlobals.LoseALife();
-				Destroy(gameObject);
-			};
-		}
-		else
-		{
-			GetComponent<SpriteFlipbook>().flipBook.OnDone += () => Destroy(gameObject);
-		}
+		new ExplosionFX(isPlayerExp, new UnityDestroyer<GameObject>(gameObject), GetComponent<SpriteFlipbook>().flipBook);
 	}
 }
+
+public class ExplosionFX
+{
+	public ExplosionFX(bool isPlayerExp, IDestroyer dest, Flipbook flip)
+	{
+		Action act = dest.Destroy;
+
+		if(isPlayerExp)
+			act += GameGlobals.LoseALife;
+
+		flip.OnDone += act;
+	}
+}
+
 }
