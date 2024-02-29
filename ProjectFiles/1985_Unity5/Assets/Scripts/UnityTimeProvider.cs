@@ -111,7 +111,7 @@ public class UnityInstantiater<T> : IInstantiater where T: UnityEngine.Object
 	}
 }
 
-public class UnityDestroyer<T> : IDestroyable where T : UnityEngine.Object
+public class UnityDestroyer<T> : IDestroyer where T : UnityEngine.Object
 {
 	public T obj;
 	public UnityDestroyer(T go)

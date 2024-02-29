@@ -43,7 +43,7 @@ public class GameGlobals :MonoBehaviour
 
 	[SerializeField] private SpriteRenderer[] liveIcons;
 
-	public static Transform player;
+	public static Disparity.ITransformProvider player;
 
 	public static bool SetAndCheckHealth(int amount)
 	{
@@ -157,8 +157,6 @@ public class GameGlobals :MonoBehaviour
 		StartCoroutine(obj_controller_enemy2());
 		StartCoroutine(obj_controller_enemy3());
 		StartCoroutine(obj_controller_enemy4());
-
-		player = FindObjectOfType<PlayerController>().transform;
 
 		Vector3 topLeft = new Vector3(0, Screen.height, 0);
 

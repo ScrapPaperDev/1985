@@ -135,7 +135,7 @@ MonoBehaviour:
   explodePlayer: {fileID: 1888439507763688, guid: 85192e71fdfdb9340b13c160128765e3,
     type: 2}
   clip2: {fileID: 8300000, guid: b27c2f09a81658247842f6fc1e00c6b2, type: 3}
-  isEnemy3Bullet: 1
+  home: 1
 --- !u!114 &114386769134057232
 MonoBehaviour:
   m_ObjectHideFlags: 1

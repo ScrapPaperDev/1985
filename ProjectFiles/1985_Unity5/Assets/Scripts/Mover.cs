@@ -39,10 +39,10 @@ public class Mover : IMover
 
 public class OffscreenDestroyable :IOffscreenable
 {
-	private IDestroyable destroyable;
+	private IDestroyer destroyable;
 	private ITransformProvider t;
 
-	public OffscreenDestroyable(IDestroyable destroyer, ITransformProvider t)
+	public OffscreenDestroyable(IDestroyer destroyer, ITransformProvider t)
 	{
 		destroyable = destroyer;
 		this.t = t;

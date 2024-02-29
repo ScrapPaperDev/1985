@@ -6,7 +6,7 @@ public class HumbleBullet
 	private Mover mover;
 	private IOffscreenable offscreenHandler;
 
-	public HumbleBullet(ITransformProvider t, ITimeProvider tt, IDestroyable d, float speed)
+	public HumbleBullet(ITransformProvider t, ITimeProvider tt, IDestroyer d, float speed)
 	{
 		mover = new Mover(speed, t, tt);
 		offscreenHandler = new OffscreenDestroyable(d, t);

@@ -8,13 +8,10 @@ using Disparity;
 namespace Unity1985{
 public class Enemy : MonoBehaviour
 {
-
-	
 	[SerializeField] private AudioClip clip;
 	[SerializeField] private AudioClip clip2;
 	[SerializeField] private GameObject explode;
 	[SerializeField] private GameObject explodePlayer;
-
 
 	[SerializeField] private float speed;
 	[SerializeField] private int enemyType;
@@ -33,12 +30,10 @@ public class Enemy : MonoBehaviour
 		var tp = new UnityTransformProvider(transform);
 		dest = new UnityDestroyer<GameObject>(null);
 
-		plane = new EnemyPlane(tp, enemyType, new UnityTimeProvider(), speed, respawnOffset, new UnityRandom(), side, dest);
+		plane = new EnemyPlane(tp, enemyType, new UnityTimeProvider(), speed, respawnOffset, new UnityRandom(), side, dest, points, new UnityInstantiater<GameObject>(enemyBulletPrefab));
 
-		plane.bullets = new UnityInstantiater<GameObject>(enemyBulletPrefab);
 		plane.explosion = new UnityInstantiater<GameObject>(explode);
-		plane.explosion2 = new UnityInstantiater<GameObject>(explodePlayer);
-		
+		plane.explosion2 = new UnityInstantiater<GameObject>(explodePlayer);		
 	}
 
 	private void Update()
@@ -46,34 +41,19 @@ public class Enemy : MonoBehaviour
 		plane.Fly();			
 	}
 
-	private bool hit;
-
 	private void OnTriggerEnter2D(Collider2D other)
 	{
+		
 		if(other.GetComponent<PlayerController>() != null)
-		{
+		{			
 			dest.obj = other.gameObject;
 			plane.HitPlayer();
 		}
 		else if(other.GetComponent<Bullet>() != null)
-		{
-			if(hit)
-				return;
-
-			hit = true;
-			GameGlobals.PlaySound(clip);
-			Instantiate(explode, transform.position, Quaternion.identity);
-			Destroy(other.gameObject);
-			transform.position = new Vector3(Random.Range(GameGlobals.left + transform.HalfWidth(), GameGlobals.right - transform.HalfWidth()), GameGlobals.up + respawnOffset);
-			int score = points;//isEnemy2 ? 10 : isEnemy3 ? 20 : isEnemy4 ? 40 : 5;
-			GameGlobals.SetScore(score);
-			Invoke("Unhit", .1f);
+		{			
+			dest.obj = other.gameObject;
+			plane.HitBullet();
 		}
-	}
-
-	private void Unhit()
-	{
-		hit = false;
 	}
 }
 
@@ -84,17 +64,20 @@ public sealed class EnemyPlane
 	private IMover mover;
 	private IOffscreenable offscreener;
 	private EnemyBehaviour behaviour;
-	public IInstantiater bullets;
 	public IInstantiater explosion;
 	public IInstantiater explosion2;
 	private RandomRespawner respawner;
-	private IDestroyable destroyer;
+	private IDestroyer destroyer;
 	private ITransformProvider transform;
+	private bool hit;
+	private int points;
+	private int cooldown;
 
-	public EnemyPlane(ITransformProvider t, int type, ITimeProvider time, float speed, float offset, IRandomProvider<float> rand, Sides side, IDestroyable dest)
+	public EnemyPlane(ITransformProvider t, int type, ITimeProvider time, float speed, float offset, IRandomProvider<float> rand, Sides side, IDestroyer dest, int points, IInstantiater buls)
 	{		
 		this.offset = offset;
 		transform = t;
+		this.points = points;
 
 		float speedo = -(type == 1 ? speed / 2 : speed);
 		if(type == 3)
@@ -105,11 +88,11 @@ public sealed class EnemyPlane
 		switch(type)
 		{
 			case 1:
-				behaviour = new Shooter(bullets, t, new UnityRandomInt());
+				behaviour = new Shooter(buls, t, new UnityRandomInt());
 				break;
 
 			case 2:
-				behaviour = new Shooter(bullets, t, new UnityRandomInt());
+				behaviour = new Shooter(buls, t, new UnityRandomInt());
 				break;
 			default:
 				behaviour = new EnemyBehaviour();
@@ -126,6 +109,7 @@ public sealed class EnemyPlane
 		mover.Move();
 		offscreener.CheckOffscreen();
 		behaviour.Behave();
+		HitCooldown();
 	}
 
 	public void HitPlayer()
@@ -144,6 +128,33 @@ public sealed class EnemyPlane
 		}
 	}
 
+	private void HitCooldown()
+	{
+		if(hit)
+		{
+			if(cooldown > 6)
+			{
+				cooldown = 0;
+				hit = false;
+				return;
+			}
+			cooldown++;
+		}
+	}
+
+	public void HitBullet()
+	{
+		if(hit)
+			return;
+
+		hit = true;
+		//GameGlobals.PlaySound(clip);
+		explosion.Instantiate(transform.pos);
+		destroyer.Destroy();
+		respawner.Respawn();
+		int score = points;
+		GameGlobals.SetScore(score);
+	}
 }
 
 public class EnemyBehaviour
@@ -161,7 +172,7 @@ public class Shooter : EnemyBehaviour
 	protected ITransformProvider t;
 	protected IRandomProvider<int> rand;
 
-	private float shootChance;
+	private int shootChance;
 	private int timeBetweenShots;
 
 	private int frames;
@@ -172,6 +183,7 @@ public class Shooter : EnemyBehaviour
 		this.t = t;
 		rand = r;
 		timeBetweenShots = 30;
+		shootChance = 30;
 	}
 
 	public override void Behave()

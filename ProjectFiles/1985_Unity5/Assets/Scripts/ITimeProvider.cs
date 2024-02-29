@@ -10,7 +10,7 @@ public interface ITimeProvider
 	float deltaTime{ get; }
 }
 
-public interface IDestroyable
+public interface IDestroyer
 {
 	void Destroy();
 }
@@ -38,6 +38,7 @@ public interface IInputProvider
 	bool pause{ get; }
 }
 
+//id say replace with fake vector3s but include a converter and put it in the setter and getter so its all done from one palce.
 public interface ITransformProvider
 {
 	IVector3Provider pos{ get; set; }

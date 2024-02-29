@@ -2,6 +2,7 @@
 using System;
 using Humble1985;
 using Disparity.Unity;
+using Disparity;
 
 namespace Unity1985{
 public class PlayerController : MonoBehaviour
@@ -27,12 +28,26 @@ public class PlayerController : MonoBehaviour
 		shooter.Bind(shootThresh);
 
 		movement = new PlayerMover(shooter.transform, shooter.timerProvider, shooter.input, speed, panelSize);
+		GameGlobals.player = new UnityTransformProvider(transform);
+	}
+
+	private void OnDestroy()
+	{
+		GameGlobals.player = null;
 	}
 
 	private void Update()
 	{
 		movement.Move();
 		shooter.Shoot();
+	}
+}
+
+public class Player
+{
+	public Player(ITransformProvider p)
+	{
+		GameGlobals.player = p;
 	}
 }
 
