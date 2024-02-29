@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
 using Random = UnityEngine.Random;
+using Disparity;
+using Disparity.Unity;
 
 namespace Unity1985{
 
@@ -149,11 +151,6 @@ public class GameGlobals :MonoBehaviour
 		if(scores == null)
 			scores = new int[11];
 
-		StartCoroutine(obj_controller_enemy());
-		StartCoroutine(obj_controller_enemy2());
-		StartCoroutine(obj_controller_enemy3());
-		StartCoroutine(obj_controller_enemy4());
-
 		Vector3 topLeft = new Vector3(0, Screen.height, 0);
 
 		Vector3 bottomRight = new Vector3(Screen.width, 0, 0);
@@ -170,6 +167,18 @@ public class GameGlobals :MonoBehaviour
 		Debug.Log(down);
 		Debug.Log(left);
 		Debug.Log(right);
+
+
+	}
+
+	private void Start()
+	{
+		var en1 = new EnemyWaveData(new UnityInstantiater<GameObject>(enemy), 1, 8);
+		var en2 = new EnemyWaveData(new UnityInstantiater<GameObject>(enemy2), 12, 10);
+		var en3 = new EnemyWaveData(new UnityInstantiater<GameObject>(enemy3), 24, 12);
+		var en4 = new EnemyWaveData(new UnityInstantiater<GameObject>(enemy4), 32, 16);
+
+		new Game(en1, en2, en3, en4, UnityScheduler.instance, new UnityRandom());
 	}
 
 	private void OnDestroy()
@@ -177,45 +186,79 @@ public class GameGlobals :MonoBehaviour
 		instance = null;
 	}
 
-	private IEnumerator obj_controller_enemy()
+}
+
+
+public class Game
+{
+	private EnemyWaveData enemy1;
+	private EnemyWaveData enemy2;
+	private EnemyWaveData enemy3;
+	private EnemyWaveData enemy4;
+	private float offset;
+	private IRandomProvider<float> rand;
+	private IScheduler sche;
+
+	private EnemySpawner spawner;
+
+
+	public Game(EnemyWaveData enemy1, EnemyWaveData enemy2, EnemyWaveData enemy3, EnemyWaveData enemy4, IScheduler scheduler, IRandomProvider<float> rando)
 	{
-		yield return new WaitForSeconds(.5f);
-		while(true)
-		{
-			Instantiate(enemy, new Vector3(Random.Range(left, right), up - instOffset), Quaternion.identity);
-			yield return new WaitForSeconds(8.0f);
-		}
+		this.enemy1 = enemy1;
+		this.enemy2 = enemy2;
+		this.enemy3 = enemy3;
+		this.enemy4 = enemy4;
+		sche = scheduler;
+		rand = rando;
+		spawner = new EnemySpawner();
+		StartWaves();
+	}
+
+
+	public void StartWaves()
+	{
+		var wave1 = spawner.SpawnEnemies(enemy1, rand, GameGlobals.left, GameGlobals.right, GameGlobals.up, offset);
+		var wave2 = spawner.SpawnEnemies(enemy2, rand, GameGlobals.left, GameGlobals.right, GameGlobals.up, offset);
+		var wave3 = spawner.SpawnEnemies(enemy3, rand, GameGlobals.left, GameGlobals.right, GameGlobals.up, offset);
+		var wave4 = spawner.SpawnEnemies(enemy4, rand, GameGlobals.left, GameGlobals.right, GameGlobals.up, offset);
+
+		new Disparity.Coroutine(sche, wave1);
+		new Disparity.Coroutine(sche, wave2);
+		new Disparity.Coroutine(sche, wave3);
+		new Disparity.Coroutine(sche, wave4);
+
 
 	}
 
-	private IEnumerator obj_controller_enemy2()
-	{
-		yield return new WaitForSeconds(12);
-		while(true)
-		{
-			Instantiate(enemy2, new Vector3(Random.Range(left, right), up - instOffset), Quaternion.identity);
-			yield return new WaitForSeconds(UnityEngine.Random.Range(12.0f, 16.0f));
-		}
-	}
+}
 
-	private IEnumerator obj_controller_enemy3()
-	{
-		yield return new WaitForSeconds(25);
-		while(true)
-		{
-			Instantiate(enemy3, new Vector3(Random.Range(left, right), up - instOffset), Quaternion.identity);
-			yield return new WaitForSeconds(UnityEngine.Random.Range(12.0f, 16.0f));
-		}
-	}
 
-	private IEnumerator obj_controller_enemy4()
+public class EnemySpawner
+{
+
+	public IEnumerator SpawnEnemies(EnemyWaveData enemy, IRandomProvider<float> range, float left, float right, float offscreen, float offset)
 	{
-		yield return new WaitForSeconds(60);
+		yield return new Disparity.WaitForSeconds(enemy.delay);
+		var wait = new Disparity.WaitForSeconds(enemy.looptime);
 		while(true)
 		{
-			Instantiate(enemy4, new Vector3(Random.Range(left, right), down - instOffset), Quaternion.identity);
-			yield return new WaitForSeconds(UnityEngine.Random.Range(12.0f, 16.0f));
+			enemy.enemy.Instantiate(new FakeVector3(range.RandomRange(left, right), offscreen - offset));
+			yield return wait;
 		}
 	}
 }
+
+public class EnemyWaveData
+{
+	public EnemyWaveData(IInstantiater en, float d, float l)
+	{
+		enemy = en;
+		delay = d;
+		looptime = l;
+	}
+	public IInstantiater enemy;
+	public float delay;
+	public float looptime;
+}
+
 }
