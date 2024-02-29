@@ -148,7 +148,7 @@ public static class UnityServiceFactory
 	public static T CreateService<T>(string name = "") where T: UnityEngine.Object
 	{
 		string n = string.IsNullOrEmpty(name) ? typeof(T).Name : name;
-		GameObject inst = new GameObject(n, typeof(T));
+		GameObject inst = new GameObject(n);
 		Component comp = inst.AddComponent(typeof(T));
 		UnityEngine.Object.DontDestroyOnLoad(inst);
 		return comp as T;

@@ -12,6 +12,9 @@ public class UnityServiceProvider : MonoBehaviour
 
 		var s = UnityServiceFactory.CreateService<UnityScheduler>("Scheduler");
 		s.transform.SetParent(thisT);
+
+		var a = UnityServiceFactory.CreateService<AudioService>("Audio Service");
+		a.transform.SetParent(thisT);
 	}
 }
 

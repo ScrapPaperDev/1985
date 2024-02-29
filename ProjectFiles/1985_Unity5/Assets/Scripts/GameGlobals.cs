@@ -11,10 +11,6 @@ public class GameGlobals :MonoBehaviour
 {
 	private static GameGlobals instance;
 
-	//	[SerializeField] private float _xBounds;
-	//	[SerializeField] private float _yBounds;
-
-	[SerializeField] private AudioSource source;
 
 	[SerializeField] private GameObject enemy;
 	[SerializeField] private GameObject enemy2;
@@ -221,17 +217,5 @@ public class GameGlobals :MonoBehaviour
 			yield return new WaitForSeconds(UnityEngine.Random.Range(12.0f, 16.0f));
 		}
 	}
-
-	public static void PlaySound(AudioClip clip)
-	{
-//		if(instance.source.isPlaying)
-//			instance.source.Stop();
-//
-//		instance.source.clip = clip;
-		instance.source.PlayOneShot(clip);
-	}
-
-
 }
-
 }

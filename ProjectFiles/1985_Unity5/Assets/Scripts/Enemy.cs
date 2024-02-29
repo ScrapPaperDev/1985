@@ -30,7 +30,7 @@ public class Enemy : MonoBehaviour
 		var tp = new UnityTransformProvider(transform);
 		dest = new UnityDestroyer<GameObject>(null);
 
-		plane = new EnemyPlane(tp, enemyType, new UnityTimeProvider(), speed, respawnOffset, new UnityRandom(), side, dest, points, new UnityInstantiater<GameObject>(enemyBulletPrefab));
+		plane = new EnemyPlane(tp, enemyType, new UnityTimeProvider(), speed, respawnOffset, new UnityRandom(), side, dest, points, new UnityInstantiater<GameObject>(enemyBulletPrefab), AudioService.instance, new UnitySoundClip(clip), new UnitySoundClip(clip2));
 
 		plane.explosion = new UnityInstantiater<GameObject>(explode);
 		plane.explosion2 = new UnityInstantiater<GameObject>(explodePlayer);		
@@ -72,12 +72,18 @@ public sealed class EnemyPlane
 	private bool hit;
 	private int points;
 	private int cooldown;
+	private IAudioPlayer audioPlayer;
+	private ISoundProvider sound1;
+	private ISoundProvider sound2;
 
-	public EnemyPlane(ITransformProvider t, int type, ITimeProvider time, float speed, float offset, IRandomProvider<float> rand, Sides side, IDestroyer dest, int points, IInstantiater buls)
+	public EnemyPlane(ITransformProvider t, int type, ITimeProvider time, float speed, float offset, IRandomProvider<float> rand, Sides side, IDestroyer dest, int points, IInstantiater buls, IAudioPlayer audio, ISoundProvider clip1, ISoundProvider clip2)
 	{		
 		this.offset = offset;
 		transform = t;
 		this.points = points;
+		audioPlayer = audio;
+		this.sound1 = clip1;
+		this.sound2 = clip2;
 
 		float speedo = -(type == 1 ? speed / 2 : speed);
 		if(type == 3)
@@ -118,13 +124,13 @@ public sealed class EnemyPlane
 		{
 			destroyer.Destroy();
 			explosion2.Instantiate(transform.pos);
-			//GameGlobals.PlaySound(clip2);
+			audioPlayer.PlaySound(sound2);
 		}
 		else
-		{
-			//GameGlobals.PlaySound(clip);
+		{	
 			explosion.Instantiate(transform.pos);
 			respawner.Respawn();
+			audioPlayer.PlaySound(sound1);
 		}
 	}
 
