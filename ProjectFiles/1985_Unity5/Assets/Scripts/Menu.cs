@@ -10,7 +10,7 @@ public class Menu : MonoBehaviour
 
 	public void StartGame(bool modern)
 	{
-		GameGlobals.modern = modern;
+		Game.modern = modern;
 		UnityEngine.SceneManagement.SceneManager.LoadScene("Game");
 	}
 

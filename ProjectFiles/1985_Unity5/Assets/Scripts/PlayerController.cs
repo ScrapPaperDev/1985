@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
 	private PlayerShooter shooter;
 	private IMover movement;
 
+
+
 	private void Awake()
 	{
 		shooter = new Humble1985.PlayerShooter();
@@ -28,12 +30,12 @@ public class PlayerController : MonoBehaviour
 		shooter.Bind(shootThresh);
 
 		movement = new PlayerMover(shooter.transform, shooter.timerProvider, shooter.input, speed, panelSize);
-		GameGlobals.player = new UnityTransformProvider(transform);
+		Game.player = new UnityTransformProvider(transform);
 	}
 
 	private void OnDestroy()
 	{
-		GameGlobals.player = null;
+		Game.player = null;
 	}
 
 	private void Update()
@@ -42,14 +44,5 @@ public class PlayerController : MonoBehaviour
 		shooter.Shoot();
 	}
 }
-
-public class Player
-{
-	public Player(ITransformProvider p)
-	{
-		GameGlobals.player = p;
-	}
-}
-
 
 }

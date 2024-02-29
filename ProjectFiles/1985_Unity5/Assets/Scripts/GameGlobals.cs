@@ -11,164 +11,17 @@ namespace Unity1985{
 
 public class GameGlobals :MonoBehaviour
 {
-	private static GameGlobals instance;
-
-
 	[SerializeField] private GameObject enemy;
 	[SerializeField] private GameObject enemy2;
 	[SerializeField] private GameObject enemy3;
 	[SerializeField] private GameObject enemy4;
 
-	[SerializeField] private float instOffset;
-
-
-	public static float up{ get; private set; }
-	public static float down{ get; private set; }
-	public static float left{ get; private set; }
-	public static float right{ get; private set; }
-
-
-	public static bool modern;
-
-
-	public static int score;
-	public static int lives;
-	public static int health;
-
-	[SerializeField] private SpriteRenderer healthBar;
-
-	[SerializeField] private TextMesh scoreText;
-
-	[SerializeField] private SpriteRenderer[] liveIcons;
-
-	public static Disparity.ITransformProvider player;
-
-	public static bool SetAndCheckHealth(int amount)
-	{
-		health -= amount;
-		float i = Mathf.Clamp((float)health / 100.0f, 0, 100f);
-
-		instance.healthBar.transform.parent.localScale = new Vector3(i, instance.healthBar.transform.parent.localScale.y, 1);
-		instance.healthBar.color = Color.Lerp(Color.red, Color.yellow, i);
-
-		if(health < 0)
-			health = 0;
-
-		return health == 0;
-	}
-
-	public static void SetScore(int s)
-	{
-		score += s;
-		instance.scoreText.text = score.ToString();
-	}
-
 	public GameObject playerPrefab;
-
-	public GameObject highScoreTable;
-
-	private static int[] scores;
-	private static string[] names;
-
-	public InputField[] scoreFields;
-
-	public static void LoseALife()
-	{
-		lives--;
-
-		for(int i = 2; i >= lives; i--)
-			instance.liveIcons[i].enabled = false;
-
-		SetAndCheckHealth(-100);
-
-
-		if(lives == 0)
-		{
-			//GameGlobals.ShowHighscoreTable();
-			instance.highScoreTable.SetActive(true);
-
-			scores[10] = score;
-
-			Array.Sort(scores, ((x, y) => y - x));
-
-
-			int scoreIndex = 0;
-
-			for(int i = 0; i < 10; i++)
-				instance.scoreFields[i].interactable = false;			
-
-			for(int i = 0; i < 10; i++)
-			{
-				if(score >= scores[i])
-				{
-					instance.scoreFields[i].interactable = true;
-					scoreIndex = i;
-					break;
-				}
-			}
-
-			for(int i = 0; i < 10; i++)
-				instance.scoreFields[i].text = scores[i].ToString();
-
-
-			instance.StartCoroutine(instance.HighScoreTable());
-		}
-		else
-		{
-			Instantiate(instance.playerPrefab, Vector3.zero, Quaternion.identity);
-		}
-
-	}
-
-	private IEnumerator HighScoreTable()
-	{
-		while(highScoreTable.activeInHierarchy)
-		{
-			if(Input.GetKeyDown(KeyCode.Escape))
-				highScoreTable.SetActive(false);
-			yield return null;
-		}
-
-		UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
-	}
-
-	private void OnApplicationQuit()
-	{
-
-	}
 
 	private void Awake()
 	{
 		Application.targetFrameRate = 60;
 		Disparity.Settings.TargetFrameRate = () => Application.targetFrameRate;
-
-		instance = this;
-		health = 100;
-		lives = 3;
-		score = 0;
-		instance.highScoreTable.SetActive(false);
-
-		if(scores == null)
-			scores = new int[11];
-
-		Vector3 topLeft = new Vector3(0, Screen.height, 0);
-
-		Vector3 bottomRight = new Vector3(Screen.width, 0, 0);
-
-		Vector3 topWorldPosition = Camera.main.ScreenToWorldPoint(topLeft);
-		Vector3 bottomWorldPosition = Camera.main.ScreenToWorldPoint(bottomRight);
-
-		up = topWorldPosition.y;
-		down = bottomWorldPosition.y;
-		left = topWorldPosition.x;
-		right = bottomWorldPosition.x;
-
-		Debug.Log(up);
-		Debug.Log(down);
-		Debug.Log(left);
-		Debug.Log(right);
-
-
 	}
 
 	private void Start()
@@ -178,14 +31,75 @@ public class GameGlobals :MonoBehaviour
 		var en3 = new EnemyWaveData(new UnityInstantiater<GameObject>(enemy3), 24, 12);
 		var en4 = new EnemyWaveData(new UnityInstantiater<GameObject>(enemy4), 32, 16);
 
-		new Game(en1, en2, en3, en4, UnityScheduler.instance, new UnityRandom());
-	}
+		new Game(en1, en2, en3, en4, UnityScheduler.instance, new UnityRandom(), new UnityInstantiater<GameObject>(playerPrefab), GetComponent<IPresentable>(), new UnityCamWorldBoundaryProvider());
 
-	private void OnDestroy()
+	}
+}
+
+public interface IWorldBoundaryProvider
+{
+	FakeVector3 topLeft{ get; }
+	FakeVector3 bottomRight{ get; }
+	FakeVector3 topWorldPosition{ get; }
+	FakeVector3 bottomWorldPosition{ get; }
+}
+
+public class UnityCamWorldBoundaryProvider : IWorldBoundaryProvider
+{
+	public FakeVector3 topLeft	{ get { return new FakeVector3(0, Screen.height); } }
+	public FakeVector3 bottomRight	{ get { return new FakeVector3(Screen.width, 0); } }
+	public FakeVector3 topWorldPosition	{ get { return Camera.main.ScreenToWorldPoint(topLeft.ToUnityV3()).ToFakeVector3(); } }
+	public FakeVector3 bottomWorldPosition	{ get { return Camera.main.ScreenToWorldPoint(bottomRight.ToUnityV3()).ToFakeVector3(); } }
+}
+
+
+
+
+
+public class PlayerDataModel
+{
+	public int score{ get; private set; }
+	public int lives{ get; private set; }
+	public int health{ get; private set; }
+
+	public event Action<int> OnHealthChanged = delegate {};
+	public event Action<int> OnScoreChanged = delegate {};
+	public event Action<int> OnLivesChanged = delegate {};
+
+	public PlayerDataModel()
 	{
-		instance = null;
+		health = 100;
+		lives = 3;
+		score = 0;
 	}
 
+	public bool IsDead()
+	{		
+		return health == 0;
+	}
+
+	public void SetHealth(int amount)
+	{
+		health -= amount;
+
+		if(health < 0)
+			health = 0;		
+
+		OnHealthChanged(health);
+	}
+
+	public void SetScore(int s)
+	{
+		score += s;
+		OnScoreChanged(score);
+	}
+
+	public void LoseALife()
+	{
+		lives--;
+		SetHealth(-100);
+		OnLivesChanged(lives);
+	}
 }
 
 
@@ -198,12 +112,26 @@ public class Game
 	private float offset;
 	private IRandomProvider<float> rand;
 	private IScheduler sche;
+	private IInstantiater playerInst;
 
 	private EnemySpawner spawner;
+	public static PlayerDataModel playerData;
+
+	public static float up{ get; private set; }
+	public static float down{ get; private set; }
+	public static float left{ get; private set; }
+	public static float right{ get; private set; }
+
+	public static Disparity.ITransformProvider player;
+
+	public static bool modern;
+
+	private UIPresenter presenter;
 
 
-	public Game(EnemyWaveData enemy1, EnemyWaveData enemy2, EnemyWaveData enemy3, EnemyWaveData enemy4, IScheduler scheduler, IRandomProvider<float> rando)
+	public Game(EnemyWaveData enemy1, EnemyWaveData enemy2, EnemyWaveData enemy3, EnemyWaveData enemy4, IScheduler scheduler, IRandomProvider<float> rando, IInstantiater pla, IPresentable presentable, IWorldBoundaryProvider world)
 	{
+		SetWorldBoundaries(world);
 		this.enemy1 = enemy1;
 		this.enemy2 = enemy2;
 		this.enemy3 = enemy3;
@@ -212,15 +140,44 @@ public class Game
 		rand = rando;
 		spawner = new EnemySpawner();
 		StartWaves();
+
+		playerInst = pla;
+
+		playerData = new PlayerDataModel();
+
+		playerData.OnLivesChanged += RespawnPlayer_OnLivesChanged;
+
+		presenter = new UIPresenter(playerData, presentable);
+	}
+
+	private void SetWorldBoundaries(IWorldBoundaryProvider world)
+	{		
+		up = world.topWorldPosition.y;
+		down = world.bottomWorldPosition.y;
+		left = world.topWorldPosition.x;
+		right = world.bottomWorldPosition.x;
+		Debug.Log(up);
+		Debug.Log(down);
+		Debug.Log(left);
+		Debug.Log(right);
+	}
+
+	private void RespawnPlayer_OnLivesChanged(int obj)
+	{
+		if(obj > 0)
+		{
+			playerInst.Instantiate(new FakeVector3(0, 0));
+		}
+
 	}
 
 
 	public void StartWaves()
 	{
-		var wave1 = spawner.SpawnEnemies(enemy1, rand, GameGlobals.left, GameGlobals.right, GameGlobals.up, offset);
-		var wave2 = spawner.SpawnEnemies(enemy2, rand, GameGlobals.left, GameGlobals.right, GameGlobals.up, offset);
-		var wave3 = spawner.SpawnEnemies(enemy3, rand, GameGlobals.left, GameGlobals.right, GameGlobals.up, offset);
-		var wave4 = spawner.SpawnEnemies(enemy4, rand, GameGlobals.left, GameGlobals.right, GameGlobals.up, offset);
+		var wave1 = spawner.SpawnEnemies(enemy1, rand, left, right, up, offset);
+		var wave2 = spawner.SpawnEnemies(enemy2, rand, left, right, up, offset);
+		var wave3 = spawner.SpawnEnemies(enemy3, rand, left, right, up, offset);
+		var wave4 = spawner.SpawnEnemies(enemy4, rand, left, right, up, offset);
 
 		new Disparity.Coroutine(sche, wave1);
 		new Disparity.Coroutine(sche, wave2);

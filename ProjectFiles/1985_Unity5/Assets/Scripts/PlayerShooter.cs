@@ -27,9 +27,9 @@ public class PlayerShooter : IBindable
 		{
 			if(shootTimer > shootThresh)
 			{
-				if(Unity1985.GameGlobals.score > 999)
+				if(Unity1985.Game.playerData.score > 999)
 					ShootTripple();
-				else if(Unity1985.GameGlobals.score > 399)
+				else if(Unity1985.Game.playerData.score > 399)
 					ShootDouble();
 				else
 					ShootSingle();

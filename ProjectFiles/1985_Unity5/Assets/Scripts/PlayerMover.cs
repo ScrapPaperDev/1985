@@ -26,15 +26,15 @@ public class PlayerMover : IMover
 		currentVelo.x = input.x * time.deltaTime * speed;
 		currentVelo.y = input.y * time.deltaTime * speed;
 
-		if(player.pos.x < GameGlobals.left + player.HalfWidth() && currentVelo.x < 0)
+		if(player.pos.x < Game.left + player.HalfWidth() && currentVelo.x < 0)
 			currentVelo.Set2(0, currentVelo.y);
 
-		if(player.pos.x > GameGlobals.right - player.HalfWidth() && currentVelo.x > 0)
+		if(player.pos.x > Game.right - player.HalfWidth() && currentVelo.x > 0)
 			currentVelo.Set2(0, currentVelo.y);
 
-		if(player.pos.y < GameGlobals.down + panelSize && currentVelo.y < 0)
+		if(player.pos.y < Game.down + panelSize && currentVelo.y < 0)
 			currentVelo.Set2(currentVelo.x, 0);
-		if(player.pos.y > GameGlobals.up && currentVelo.y > 0)
+		if(player.pos.y > Game.up && currentVelo.y > 0)
 			currentVelo.Set2(currentVelo.x, 0);
 		if(currentVelo.y < 0)
 			currentVelo.Set2(currentVelo.x, currentVelo.y / 2.0f);

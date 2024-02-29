@@ -55,7 +55,7 @@ public class EnemyBuller
 
 	public EnemyBuller(IDestroyer d, ITransformProvider t, float speed, bool home, IInstantiater explode, IDestroyer pd)
 	{
-		if(GameGlobals.player == null)
+		if(Game.player == null)
 		{
 			d.Destroy();
 			return;
@@ -66,7 +66,7 @@ public class EnemyBuller
 		transform = t;
 		this.explode = explode;
 		playerDestroyer = pd;
-		dirToPlayer = new FakeVector3(GameGlobals.player.pos.x - transform.pos.x, GameGlobals.player.pos.y - transform.pos.y);
+		dirToPlayer = new FakeVector3(Game.player.pos.x - transform.pos.x, Game.player.pos.y - transform.pos.y);
 		velo = new FakeVector3(transform.pos.x, transform.pos.y);
 		this.speed = speed;
 
@@ -91,13 +91,15 @@ public class EnemyBuller
 
 
 
-		if(transform.pos.y < GameGlobals.down || transform.pos.y > GameGlobals.up || transform.pos.x < GameGlobals.left || transform.pos.x > GameGlobals.right)
+		if(transform.pos.y < Game.down || transform.pos.y > Game.up || transform.pos.x < Game.left || transform.pos.x > Game.right)
 			destroyer.Destroy();
 	}
 
 	public void HitPlayer()
 	{
-		if(GameGlobals.SetAndCheckHealth(10))
+		Game.playerData.SetHealth(10);
+
+		if(Game.playerData.IsDead())
 		{
 			playerDestroyer.Destroy();
 			explode.Instantiate(transform.pos);

@@ -23,7 +23,7 @@ public class ExplosionFX
 		Action act = dest.Destroy;
 
 		if(isPlayerExp)
-			act += GameGlobals.LoseALife;
+			act += Game.playerData.LoseALife;
 
 		flip.OnDone += act;
 	}

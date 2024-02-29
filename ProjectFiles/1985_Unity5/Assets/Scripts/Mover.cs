@@ -50,7 +50,7 @@ public class OffscreenDestroyable :IOffscreenable
 
 	public void CheckOffscreen()
 	{
-		if(t.pos.y > Unity1985.GameGlobals.up)
+		if(t.pos.y > Unity1985.Game.up)
 			destroyable.Destroy();
 	}
 }
@@ -78,10 +78,10 @@ public class RespawnOffscreen :Humble1985.IOffscreenable
 		switch(side)
 		{
 			case Sides.Up:
-				offscreen = transform.pos.y > Unity1985.GameGlobals.up + transform.HalfWidth();
+				offscreen = transform.pos.y > Unity1985.Game.up + transform.HalfWidth();
 				break;
 			case Sides.Down:
-				offscreen = transform.pos.y < Unity1985.GameGlobals.down - transform.HalfWidth();
+				offscreen = transform.pos.y < Unity1985.Game.down - transform.HalfWidth();
 				break;
 		}
 
@@ -116,13 +116,13 @@ public class RandomRespawner
 		switch(side)
 		{
 			case Sides.Up:
-				newSpawn = Unity1985.GameGlobals.down - transform.HalfWidth() - offset;
+				newSpawn = Unity1985.Game.down - transform.HalfWidth() - offset;
 				break;
 			case Sides.Down:
-				newSpawn = Unity1985.GameGlobals.up + transform.HalfWidth() + offset;
+				newSpawn = Unity1985.Game.up + transform.HalfWidth() + offset;
 				break;
 		}
-		transform.pos = new FakeVector3(rand.RandomRange(Unity1985.GameGlobals.left + transform.HalfWidth(), Unity1985.GameGlobals.right - transform.HalfWidth()), newSpawn);			
+		transform.pos = new FakeVector3(rand.RandomRange(Unity1985.Game.left + transform.HalfWidth(), Unity1985.Game.right - transform.HalfWidth()), newSpawn);			
 	}
 }
 

@@ -120,7 +120,9 @@ public sealed class EnemyPlane
 
 	public void HitPlayer()
 	{
-		if(GameGlobals.SetAndCheckHealth(30))
+		Game.playerData.SetHealth(30);
+
+		if(Game.playerData.IsDead())
 		{
 			destroyer.Destroy();
 			explosion2.Instantiate(transform.pos);
@@ -159,7 +161,7 @@ public sealed class EnemyPlane
 		destroyer.Destroy();
 		respawner.Respawn();
 		int score = points;
-		GameGlobals.SetScore(score);
+		Game.playerData.SetScore(score);
 	}
 }
 
