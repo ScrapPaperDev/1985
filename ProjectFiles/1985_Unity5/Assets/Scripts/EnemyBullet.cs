@@ -20,7 +20,7 @@ public class EnemyBullet : MonoBehaviour
 	private void Start()
 	{
 		playerDestroyer = new UnityDestroyer<GameObject>(null);
-		buller = new EnemyBuller(new UnityDestroyer<GameObject>(gameObject), new UnityTransformProvider(transform), speed, home, new UnityInstantiater<GameObject>(explodePlayer), playerDestroyer);
+		buller = new EnemyBuller(new UnityDestroyer<GameObject>(gameObject), new UnityTransformProvider(transform), speed, home, new UnityInstantiatable<GameObject>(explodePlayer), playerDestroyer, AudioService.instance, new UnitySoundClip(clip2));
 	}
 
 	private void Update()
@@ -50,10 +50,13 @@ public class EnemyBuller
 	private float speed;
 	private bool homing;
 
-	private IInstantiater explode;
+	private IInstantiatable explode;
 	private IDestroyer playerDestroyer;
 
-	public EnemyBuller(IDestroyer d, ITransformProvider t, float speed, bool home, IInstantiater explode, IDestroyer pd)
+	private IAudioPlayer player;
+	private ISoundProvider cl;
+
+	public EnemyBuller(IDestroyer d, ITransformProvider t, float speed, bool home, IInstantiatable explode, IDestroyer pd, IAudioPlayer pl, ISoundProvider clip)
 	{
 		if(Game.player == null)
 		{
@@ -61,6 +64,8 @@ public class EnemyBuller
 			return;
 		}
 
+		player = pl;
+		cl = clip;
 		destroyer = d;
 		homing = home;
 		transform = t;
@@ -103,7 +108,7 @@ public class EnemyBuller
 		{
 			playerDestroyer.Destroy();
 			explode.Instantiate(transform.pos);
-			//GameGlobals.PlaySound(clip2);
+			player.PlaySound(cl);
 		}
 		destroyer.Destroy();
 	}

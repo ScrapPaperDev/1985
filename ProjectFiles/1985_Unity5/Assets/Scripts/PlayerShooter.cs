@@ -10,7 +10,7 @@ public class PlayerShooter : IBindable
 	[Data] public float shootThresh;
 
 	public ITimeProvider timerProvider;
-	public IInstantiater bulletInstantiater;
+	public IInstantiatable bulletInstantiater;
 	public IInputProvider input;
 	public ITransformProvider transform;
 

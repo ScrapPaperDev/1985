@@ -2,13 +2,14 @@ using UnityEngine;
 using System;
 
 namespace Disparity.Unity{
-
+[DefaultExecutionOrder(-1024)]
 public class UnityServiceProvider : MonoBehaviour
 {
-	[RuntimeInitializeOnLoadMethod()]
-	private static void Init()
+	//TODO: abstract out to a generic, not specifically... unless these are actually part of the framework... yeah they sorta are i guess
+	//[RuntimeInitializeOnLoadMethod()]
+	private void Awake()
 	{
-		var thisT = FindObjectOfType<UnityServiceProvider>().transform;
+		var thisT = transform;
 
 		var s = UnityServiceFactory.CreateService<UnityScheduler>("Scheduler");
 		s.transform.SetParent(thisT);

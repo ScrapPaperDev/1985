@@ -96,11 +96,11 @@ public class UnityInputProvider : IInputProvider
 	
 }
 
-public class UnityInstantiater<T> : IInstantiater where T: UnityEngine.Object
+public class UnityInstantiatable<T> : IInstantiatable where T: UnityEngine.Object
 {
 	private T t;
 
-	public UnityInstantiater(T t)
+	public UnityInstantiatable(T t)
 	{
 		this.t = t;
 	}
@@ -110,6 +110,33 @@ public class UnityInstantiater<T> : IInstantiater where T: UnityEngine.Object
 		UnityEngine.Object.Instantiate(t, pos.ToUnityV3(), Quaternion.identity);
 	}
 }
+
+
+
+public class UnityInstantiater : IInstantiater
+{
+	public void Instantiate<T>(T obj, IVector3Provider pos) where T : class, IGameObject
+	{
+		var asGo = obj.GetGameObject<GameObject>();
+		UnityEngine.Object.Instantiate(asGo, pos.ToUnityV3(), Quaternion.identity);
+	}
+}
+
+public class UnityGameObject : IGameObject
+{
+	public UnityGameObject(GameObject go)
+	{
+		obj = go;
+	}
+
+	public T GetGameObject<T>()where T: class
+	{
+		return obj as T;
+	}
+
+	public object obj	{ get; set; }
+}
+
 
 public class UnityDestroyer<T> : IDestroyer where T : UnityEngine.Object
 {

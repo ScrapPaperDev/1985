@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
 		shooter.input = new UnityInputProvider();
 		shooter.timerProvider = new UnityTimeProvider();
 		shooter.transform = new UnityTransformProvider(player);
-		shooter.bulletInstantiater = new UnityInstantiater<Bullet>(bullet);
+		shooter.bulletInstantiater = new UnityInstantiatable<Bullet>(bullet);
 		shooter.Bind(shootThresh);
 
 		movement = new PlayerMover(shooter.transform, shooter.timerProvider, shooter.input, speed, panelSize);

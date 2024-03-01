@@ -20,14 +20,21 @@ public interface IRandomProvider<T>
 	T RandomRange(T min, T max);
 }
 
-public interface IInstantiater
+public interface IInstantiatable
 {
 	void Instantiate(IVector3Provider pos);
 }
 
-public interface IGameObject<T>
+public interface IInstantiater
 {
-	T obj{ get; }
+	void Instantiate<T>(T obj, IVector3Provider pos) where T: class, IGameObject;
+}
+
+public interface IGameObject
+{
+	object obj{ get; }
+
+	T GetGameObject<T>() where T:class;
 }
 
 public interface IInputProvider

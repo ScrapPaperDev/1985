@@ -26,12 +26,12 @@ public class GameGlobals :MonoBehaviour
 
 	private void Start()
 	{
-		var en1 = new EnemyWaveData(new UnityInstantiater<GameObject>(enemy), 1, 8);
-		var en2 = new EnemyWaveData(new UnityInstantiater<GameObject>(enemy2), 12, 10);
-		var en3 = new EnemyWaveData(new UnityInstantiater<GameObject>(enemy3), 24, 12);
-		var en4 = new EnemyWaveData(new UnityInstantiater<GameObject>(enemy4), 32, 16);
+		var en1 = new EnemyWaveData(new UnityInstantiatable<GameObject>(enemy), 1, 8);
+		var en2 = new EnemyWaveData(new UnityInstantiatable<GameObject>(enemy2), 12, 10);
+		var en3 = new EnemyWaveData(new UnityInstantiatable<GameObject>(enemy3), 24, 12);
+		var en4 = new EnemyWaveData(new UnityInstantiatable<GameObject>(enemy4), 32, 16);
 
-		new Game(en1, en2, en3, en4, UnityScheduler.instance, new UnityRandom(), new UnityInstantiater<GameObject>(playerPrefab), GetComponent<IPresentable>(), new UnityCamWorldBoundaryProvider());
+		new Game(en1, en2, en3, en4, UnityScheduler.instance, new UnityRandom(), new UnityInstantiatable<GameObject>(playerPrefab), GetComponent<IPresentable>(), new UnityCamWorldBoundaryProvider());
 
 	}
 }
@@ -112,7 +112,7 @@ public class Game
 	private float offset;
 	private IRandomProvider<float> rand;
 	private IScheduler sche;
-	private IInstantiater playerInst;
+	private IInstantiatable playerInst;
 
 	private EnemySpawner spawner;
 	public static PlayerDataModel playerData;
@@ -129,7 +129,7 @@ public class Game
 	private UIPresenter presenter;
 
 
-	public Game(EnemyWaveData enemy1, EnemyWaveData enemy2, EnemyWaveData enemy3, EnemyWaveData enemy4, IScheduler scheduler, IRandomProvider<float> rando, IInstantiater pla, IPresentable presentable, IWorldBoundaryProvider world)
+	public Game(EnemyWaveData enemy1, EnemyWaveData enemy2, EnemyWaveData enemy3, EnemyWaveData enemy4, IScheduler scheduler, IRandomProvider<float> rando, IInstantiatable pla, IPresentable presentable, IWorldBoundaryProvider world)
 	{
 		SetWorldBoundaries(world);
 		this.enemy1 = enemy1;
@@ -207,13 +207,13 @@ public class EnemySpawner
 
 public class EnemyWaveData
 {
-	public EnemyWaveData(IInstantiater en, float d, float l)
+	public EnemyWaveData(IInstantiatable en, float d, float l)
 	{
 		enemy = en;
 		delay = d;
 		looptime = l;
 	}
-	public IInstantiater enemy;
+	public IInstantiatable enemy;
 	public float delay;
 	public float looptime;
 }

@@ -30,10 +30,10 @@ public class Enemy : MonoBehaviour
 		var tp = new UnityTransformProvider(transform);
 		dest = new UnityDestroyer<GameObject>(null);
 
-		plane = new EnemyPlane(tp, enemyType, new UnityTimeProvider(), speed, respawnOffset, new UnityRandom(), side, dest, points, new UnityInstantiater<GameObject>(enemyBulletPrefab), AudioService.instance, new UnitySoundClip(clip), new UnitySoundClip(clip2));
+		plane = new EnemyPlane(tp, enemyType, new UnityTimeProvider(), speed, respawnOffset, new UnityRandom(), side, dest, points, new UnityInstantiatable<GameObject>(enemyBulletPrefab), AudioService.instance, new UnitySoundClip(clip), new UnitySoundClip(clip2), new UnityInstantiater());
 
-		plane.explosion = new UnityInstantiater<GameObject>(explode);
-		plane.explosion2 = new UnityInstantiater<GameObject>(explodePlayer);		
+		plane.enemyExplosion = new UnityGameObject(explode);
+		plane.playerExplostion = new UnityGameObject(explodePlayer);		
 	}
 
 	private void Update()
@@ -64,8 +64,9 @@ public sealed class EnemyPlane
 	private IMover mover;
 	private IOffscreenable offscreener;
 	private EnemyBehaviour behaviour;
-	public IInstantiater explosion;
-	public IInstantiater explosion2;
+	private IInstantiater instantiater;
+	public IGameObject enemyExplosion;
+	public IGameObject playerExplostion;
 	private RandomRespawner respawner;
 	private IDestroyer destroyer;
 	private ITransformProvider transform;
@@ -76,7 +77,7 @@ public sealed class EnemyPlane
 	private ISoundProvider sound1;
 	private ISoundProvider sound2;
 
-	public EnemyPlane(ITransformProvider t, int type, ITimeProvider time, float speed, float offset, IRandomProvider<float> rand, Sides side, IDestroyer dest, int points, IInstantiater buls, IAudioPlayer audio, ISoundProvider clip1, ISoundProvider clip2)
+	public EnemyPlane(ITransformProvider t, int type, ITimeProvider time, float speed, float offset, IRandomProvider<float> rand, Sides side, IDestroyer dest, int points, IInstantiatable buls, IAudioPlayer audio, ISoundProvider clip1, ISoundProvider clip2, IInstantiater instantiater)
 	{		
 		this.offset = offset;
 		transform = t;
@@ -84,6 +85,7 @@ public sealed class EnemyPlane
 		audioPlayer = audio;
 		this.sound1 = clip1;
 		this.sound2 = clip2;
+		this.instantiater = instantiater;
 
 		float speedo = -(type == 1 ? speed / 2 : speed);
 		if(type == 3)
@@ -125,12 +127,12 @@ public sealed class EnemyPlane
 		if(Game.playerData.IsDead())
 		{
 			destroyer.Destroy();
-			explosion2.Instantiate(transform.pos);
+			instantiater.Instantiate(playerExplostion, transform.pos);
 			audioPlayer.PlaySound(sound2);
 		}
 		else
 		{	
-			explosion.Instantiate(transform.pos);
+			instantiater.Instantiate(enemyExplosion, transform.pos);
 			respawner.Respawn();
 			audioPlayer.PlaySound(sound1);
 		}
@@ -156,8 +158,8 @@ public sealed class EnemyPlane
 			return;
 
 		hit = true;
-		//GameGlobals.PlaySound(clip);
-		explosion.Instantiate(transform.pos);
+		audioPlayer.PlaySound(sound1);
+		instantiater.Instantiate(enemyExplosion, transform.pos);
 		destroyer.Destroy();
 		respawner.Respawn();
 		int score = points;
@@ -176,7 +178,7 @@ public class EnemyBehaviour
 public class Shooter : EnemyBehaviour
 {
 
-	protected IInstantiater buller;
+	protected IInstantiatable buller;
 	protected ITransformProvider t;
 	protected IRandomProvider<int> rand;
 
@@ -185,7 +187,7 @@ public class Shooter : EnemyBehaviour
 
 	private int frames;
 
-	public Shooter(IInstantiater i, ITransformProvider t, IRandomProvider<int> r)
+	public Shooter(IInstantiatable i, ITransformProvider t, IRandomProvider<int> r)
 	{
 		buller = i;
 		this.t = t;
