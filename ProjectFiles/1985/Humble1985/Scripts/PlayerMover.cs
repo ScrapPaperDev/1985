@@ -1,8 +1,8 @@
 using Disparity;
-using Unity1985;
 
-namespace Humble1985{
-public class PlayerMover : IMover
+namespace Humble1985
+{
+    public class PlayerMover : IMover
 {
 	[Data] public float speed;
 	[Data] public float panelSize;

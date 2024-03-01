@@ -21,7 +21,7 @@ public class EnemyBullet : MonoBehaviour
 	private void Start()
 	{
 		playerDestroyer = new UnityDestroyer<GameObject>(null);
-		buller = new EnemyBuller(new UnityDestroyer<GameObject>(gameObject), new UnityTransformProvider(transform), speed, home, new UnityInstantiatable<GameObject>(explodePlayer), playerDestroyer, AudioService.instance, new UnitySoundClip(clip2));
+		buller = new EnemyBuller(new UnityDestroyer<GameObject>(gameObject), new UnityTransformProvider(transform), speed, home, new UnityInstantiatable<GameObject>(explodePlayer), playerDestroyer, AudioService.instance, new UnitySoundClip(clip2), new UnityTimeProvider());
 	}
 
 	private void Update()

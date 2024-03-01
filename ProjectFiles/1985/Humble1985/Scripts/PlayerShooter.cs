@@ -1,8 +1,8 @@
-using System;
 using Disparity;
 
-namespace Humble1985{
-public class PlayerShooter : IBindable
+namespace Humble1985
+{
+    public class PlayerShooter : IBindable
 {
 
 	private float shootTimer;

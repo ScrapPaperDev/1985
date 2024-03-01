@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Disparity", "Disparity\Disp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityDisparity", "UnityDisparity\UnityDisparity.csproj", "{E8677476-6115-4B8C-9022-FD98AB6F674C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Humble1985", "Humble1985\Humble1985.csproj", "{A0589E37-6081-4861-BF75-84AEFB3DEB75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{E8677476-6115-4B8C-9022-FD98AB6F674C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8677476-6115-4B8C-9022-FD98AB6F674C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8677476-6115-4B8C-9022-FD98AB6F674C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0589E37-6081-4861-BF75-84AEFB3DEB75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0589E37-6081-4861-BF75-84AEFB3DEB75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0589E37-6081-4861-BF75-84AEFB3DEB75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0589E37-6081-4861-BF75-84AEFB3DEB75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,14 +1,8 @@
-using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
-using System.Collections.Generic;
-using System;
-using Random = UnityEngine.Random;
 using Disparity;
-using Disparity.Unity;
 
-namespace Humble1985{
-public class Game
+namespace Humble1985
+{
+    public class Game
 {
 	private EnemyWaveData enemy1;
 	private EnemyWaveData enemy2;
