@@ -1,9 +1,9 @@
-using Disparity;
 using UnityEngine;
 
-namespace Disparity.Unity{
+namespace Disparity.Unity
+{
 
-public class UnityCamWorldBoundaryProvider : IWorldBoundaryProvider
+    public class UnityCamWorldBoundaryProvider : IWorldBoundaryProvider
 {
 	public FakeVector3 topLeft	{ get { return new FakeVector3(0, Screen.height); } }
 	public FakeVector3 bottomRight	{ get { return new FakeVector3(Screen.width, 0); } }

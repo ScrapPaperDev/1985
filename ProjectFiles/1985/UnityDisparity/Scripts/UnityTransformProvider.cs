@@ -1,9 +1,9 @@
 using UnityEngine;
-using System;
 
-namespace Disparity.Unity{
+namespace Disparity.Unity
+{
 
-public class UnityTransformProvider : ITransformProvider
+    public class UnityTransformProvider : ITransformProvider
 {
 	public UnityTransformProvider(Transform t)
 	{

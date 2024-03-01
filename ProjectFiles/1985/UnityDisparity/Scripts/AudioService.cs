@@ -1,13 +1,10 @@
 using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
-using System.Collections.Generic;
 using System;
-using Random = UnityEngine.Random;
 
-namespace Disparity.Unity{
+namespace Disparity.Unity
+{
 
-public class AudioService : MonoBehaviour,ISoundPlayer,IUnityService<AudioService>
+    public class AudioService : MonoBehaviour,ISoundPlayer,IUnityService<AudioService>
 {
 	public AudioService Instance
 	{

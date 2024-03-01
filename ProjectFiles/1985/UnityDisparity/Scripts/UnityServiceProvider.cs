@@ -1,8 +1,8 @@
 using UnityEngine;
-using System;
 
-namespace Disparity.Unity{
-[DefaultExecutionOrder(-1024)]
+namespace Disparity.Unity
+{
+    [DefaultExecutionOrder(-1024)]
 public class UnityServiceProvider : MonoBehaviour
 {
 	//TODO: abstract out to a generic, not specifically... unless these are actually part of the framework... yeah they sorta are i guess

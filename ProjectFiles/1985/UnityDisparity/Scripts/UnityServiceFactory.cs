@@ -1,9 +1,9 @@
 using UnityEngine;
-using System;
 
-namespace Disparity.Unity{
+namespace Disparity.Unity
+{
 
-public static class UnityServiceFactory
+    public static class UnityServiceFactory
 {
 	public static T CreateService<T>(string name = "") where T: UnityEngine.Object
 	{

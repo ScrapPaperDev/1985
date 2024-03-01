@@ -1,9 +1,9 @@
 using UnityEngine;
-using System;
 
-namespace Disparity.Unity{
+namespace Disparity.Unity
+{
 
-public class UnityGameObject : IGameObject
+    public class UnityGameObject : IGameObject
 {
 	public UnityGameObject(GameObject go)
 	{

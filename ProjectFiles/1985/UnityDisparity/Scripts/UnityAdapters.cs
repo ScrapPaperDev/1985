@@ -1,9 +1,9 @@
 using UnityEngine;
-using System;
 
-namespace Disparity.Unity{
+namespace Disparity.Unity
+{
 
-public static class UnityAdapters
+    public static class UnityAdapters
 {
 	public static UnityEngine.Vector4 ToUnityVector4(this FakeVector4 v4)
 	{

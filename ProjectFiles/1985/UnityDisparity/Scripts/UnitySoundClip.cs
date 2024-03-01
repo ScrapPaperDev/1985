@@ -1,9 +1,9 @@
 using UnityEngine;
-using System;
 
-namespace Disparity.Unity{
+namespace Disparity.Unity
+{
 
-public class UnitySoundClip : ISoundProvider
+    public class UnitySoundClip : ISoundProvider
 {
 	public AudioClip clip;
 

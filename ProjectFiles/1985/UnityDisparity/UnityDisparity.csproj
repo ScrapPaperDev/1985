@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!--TargetFramework>netstandard2.0</TargetFramework-->
+    <!--TargetFramework>net8.0</TargetFramework-->
+    <TargetFramework>net35</TargetFramework>
+    <AssemblyName>Disparity-Unity</AssemblyName>
+    <RootNamespace>Disparity.Unity</RootNamespace>
+    <OutputType>Library</OutputType>    
+  </PropertyGroup>
+
+      <ItemGroup>       
+       <Reference Include="UnityEngine">
+         <HintPath>Dependencies/UnityEngine.dll</HintPath>
+       </Reference>
+     </ItemGroup>
+
+      <ItemGroup>
+        <ProjectReference Include="..\Disparity\Disparity.csproj" />
+      </ItemGroup>
+
+</Project>

@@ -1,9 +1,9 @@
 using UnityEngine;
-using System;
 
-namespace Disparity.Unity{
+namespace Disparity.Unity
+{
 
-public class UnityVector3 : IVector3Provider
+    public class UnityVector3 : IVector3Provider
 {
 
 	private Vector3 vec;

@@ -1,9 +1,7 @@
-using UnityEngine;
-using System;
+namespace Disparity.Unity
+{
 
-namespace Disparity.Unity{
-
-public class UnityDestroyer<T> : IDestroyer where T : UnityEngine.Object
+    public class UnityDestroyer<T> : IDestroyer where T : UnityEngine.Object
 {
 	public T obj;
 	public UnityDestroyer(T go)

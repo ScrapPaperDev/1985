@@ -1,9 +1,9 @@
 using UnityEngine;
-using System;
 
-namespace Disparity.Unity{
+namespace Disparity.Unity
+{
 
-public class UnityTexScroller : TextureScroller
+    public class UnityTexScroller : TextureScroller
 {
 	private Renderer rend;
 	private MaterialPropertyBlock prop;
