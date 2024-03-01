@@ -1,24 +1,27 @@
 using System;
 
-public interface ILogger
+namespace Disparity
 {
-    void Log(object msg);
-}
-
-public class DefaultLogger : ILogger
-{
-    public void Log(object msg)
+    public interface ILogger
     {
-        Console.WriteLine(msg);
+        void Log(object msg);
     }
-}
 
-public static class Logger
-{
-    public static ILogger logger;
-
-    public static void Log(object msg)
+    public class DefaultLogger : ILogger
     {
-        logger.Log(msg);
+        public void Log(object msg)
+        {
+            Console.WriteLine(msg);
+        }
+    }
+
+    public static class Logger
+    {
+        public static ILogger logger;
+
+        public static void Log(object msg)
+        {
+            logger.Log(msg);
+        }
     }
 }
