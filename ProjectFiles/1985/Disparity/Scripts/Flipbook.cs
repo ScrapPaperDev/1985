@@ -27,7 +27,7 @@ namespace Disparity
 		public IEnumerator Flip()
 		{
 			//TODO: make disparity coroutine manager so we can skip all the boilerplate
-			var wait = new Disparity.WaitForSeconds(frameRate);
+			var wait = new WaitForSeconds(frameRate);
 			do
 			{
 				for (int i = 0; i < length; i++)

@@ -3,19 +3,19 @@ using UnityEngine;
 namespace Disparity.Unity
 {
 
-    public class UnitySoundClip : ISoundProvider
-{
-	public AudioClip clip;
-
-	public UnitySoundClip(AudioClip c)
+	public class UnitySoundClip : ISoundProvider
 	{
-		clip = c;
-	}
+		public AudioClip clip;
 
-	public T GetSound<T>() where T : class
-	{
-		return clip as T;
+		public UnitySoundClip(AudioClip c)
+		{
+			clip = c;
+		}
+
+		public T GetSound<T>() where T : class
+		{
+			return clip as T;
+		}
 	}
-}
 
 }

@@ -1,28 +1,29 @@
 using UnityEngine;
 using System;
 
-namespace Disparity.Unity{
-[DefaultExecutionOrder(-2)]
-public class UnityScheduler : MonoBehaviour , IScheduler, IUnityService<UnityScheduler>
+namespace Disparity.Unity
 {
-	public static UnityScheduler instance{ get; private set; }
-
-	public event Action<float> OnUpdated = delegate {};
-	public  UnityScheduler Instance	{ get { return instance; } set { instance = value; } }
-
-	private void Awake()
+	[DefaultExecutionOrder(-2)]
+	public class UnityScheduler : MonoBehaviour, IScheduler, IUnityService<UnityScheduler>
 	{
-		instance = this;
-	}
+		public static UnityScheduler instance { get; private set; }
 
-	private void OnDestroy()
-	{
-		instance = null;
-	}
+		public event Action<float> OnUpdated = delegate { };
+		public UnityScheduler Instance { get { return instance; } set { instance = value; } }
 
-	private void Update()
-	{
-		OnUpdated(Time.deltaTime);
+		private void Awake()
+		{
+			instance = this;
+		}
+
+		private void OnDestroy()
+		{
+			instance = null;
+		}
+
+		private void Update()
+		{
+			OnUpdated(Time.deltaTime);
+		}
 	}
-}
 }

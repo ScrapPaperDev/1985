@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace Disparity.Unity{
 
-public class UnityInstantiatable<T> : IInstantiatable where T: UnityEngine.Object
-{
+public class UnityInstantiatable<T> : IInstantiatable where T: Object
+    {
 	private T t;
 
 	public UnityInstantiatable(T t)

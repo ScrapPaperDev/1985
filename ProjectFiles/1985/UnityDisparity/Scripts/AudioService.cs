@@ -4,41 +4,41 @@ using System;
 namespace Disparity.Unity
 {
 
-    public class AudioService : MonoBehaviour,ISoundPlayer,IUnityService<AudioService>
-{
-	public AudioService Instance
+	public class AudioService : MonoBehaviour, ISoundPlayer, IUnityService<AudioService>
 	{
-		get
+		public AudioService Instance
 		{
-			throw new NotImplementedException();
+			get
+			{
+				throw new NotImplementedException();
+			}
+			set
+			{
+				throw new NotImplementedException();
+			}
 		}
-		set
+
+		public static AudioService instance;
+
+		private AudioSource source;
+
+		private void Awake()
 		{
-			throw new NotImplementedException();
+			new AudioPlayer(this);
+			source = GetComponent<AudioSource>();
+			instance = this;
+			var a = gameObject.AddComponent<AudioSource>();
+			a.loop = false;
+			a.playOnAwake = false;
+			a.spatialBlend = 0;
+			source = a;
+		}
+
+		public void PlaySound(ISoundProvider clip)
+		{
+			source.PlayOneShot(clip.GetSound<AudioClip>());
 		}
 	}
-
-	public static AudioService instance;
-
-	private AudioSource source;
-
-	private void Awake()
-	{
-		new AudioPlayer(this);
-		source = GetComponent<AudioSource>();
-		instance = this;
-		var a = gameObject.AddComponent<AudioSource>();
-		a.loop = false;
-		a.playOnAwake = false;
-		a.spatialBlend = 0;
-		source = a;
-	}
-
-	public void PlaySound(ISoundProvider clip)
-	{
-		source.PlayOneShot(clip.GetSound<AudioClip>());
-	}
-}
 
 
 }

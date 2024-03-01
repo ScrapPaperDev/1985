@@ -8,7 +8,7 @@ namespace Disparity
 
 	public static class Utils
 	{
-		public static float HalfWidth(this Disparity.ITransformProvider t)
+		public static float HalfWidth(this ITransformProvider t)
 		{
 			return t.scale.x / 2.0f;
 		}

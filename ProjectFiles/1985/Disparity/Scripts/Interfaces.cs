@@ -109,7 +109,7 @@ public class JSONData
 }
 
 
-public sealed class DataAttribute : System.Attribute
-{
+public sealed class DataAttribute : Attribute
+    {
 }
 }
