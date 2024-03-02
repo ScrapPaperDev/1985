@@ -53,7 +53,7 @@ namespace Humble1985
 			}
 			else
 			{
-				velo.AddTo(new FakeVector3(dirToPlayer.x * time.deltaTime, dirToPlayer.y * time.deltaTime));
+				velo += new FakeVector3(dirToPlayer.x * time.deltaTime, dirToPlayer.y * time.deltaTime);
 				transform.pos = velo;
 			}
 

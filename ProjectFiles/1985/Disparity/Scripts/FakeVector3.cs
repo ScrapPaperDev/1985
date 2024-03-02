@@ -1,13 +1,12 @@
+using System;
+
 namespace Disparity
 {
-
-	//id say replace with fake vector3s but include a converter and put it in the setter and getter so its all done from one palce.
-
-	//-- I think we should get rid of this and just focus on FakeVector3 implementation and instead abstract away the "adapters"
-	//-- Or rather just work with fake vectors in the frame work and create adapters for engine implementations
-
-	public struct FakeVector3 : IVector3Provider
+	public struct FakeVector3
 	{
+		public float x { get; set; }
+		public float y { get; set; }
+		public float z { get; set; }
 
 		public FakeVector3(float x, float y)
 		{
@@ -16,32 +15,154 @@ namespace Disparity
 			z = 0;
 		}
 
-		public IVector3Provider AddTo(IVector3Provider other)
-		{
-			x += other.x;
-			y += other.y;
-			z += other.z;
-
-			return this;
-		}
-
-		public void Set2(float x, float y)
+		public FakeVector3(float x, float y, float z)
 		{
 			this.x = x;
 			this.y = y;
+			this.z = z;
 		}
 
-		public float x { get; set; }
+		public static FakeVector3 NullVector { get { return new FakeVector3(0, 0, 0); } }
+		public static FakeVector3 FullVector { get { return new FakeVector3(1, 1, 1); } }
 
-		public float y { get; set; }
+		public override bool Equals(object obj)
+		{
+			if (obj == null || GetType() != obj.GetType())
+				return false;
 
-		public float z { get; set; }
+			FakeVector3 other = (FakeVector3)obj;
+			return x == other.x && y == other.y && z == other.z;
+		}
 
-		//	public static IVector3Provider operator +(FakeVector3 v1, FakeVector3 v2)
-		//	{
-		//		return v1.AddTo(v2);
-		//	}
+		public override int GetHashCode()
+		{
+			throw new NotImplementedException();
+		}
 
+		public override string ToString()
+		{
+			return $"({x}, {y}, {z})";
+		}
+
+
+
+		public static bool operator ==(FakeVector3 a, FakeVector3 b)
+		{
+			return a.Equals(b);
+		}
+
+		public static bool operator !=(FakeVector3 a, FakeVector3 b)
+		{
+			return !a.Equals(b);
+		}
+
+
+
+		public static FakeVector3 operator +(FakeVector3 v1, FakeVector3 v2)
+		{
+			return new FakeVector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
+		}
+
+		public static FakeVector3 operator -(FakeVector3 v1, FakeVector3 v2)
+		{
+			return new FakeVector3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
+		}
+
+		public static FakeVector3 operator *(FakeVector3 v1, FakeVector3 v2)
+		{
+			return new FakeVector3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
+		}
+
+		public static FakeVector3 operator /(FakeVector3 v1, FakeVector3 v2)
+		{
+			return new FakeVector3(v1.x / v2.x, v1.y / v2.y, v1.z / v2.z);
+		}
+
+		public static FakeVector3 operator +(FakeVector3 a, float amount)
+		{
+			return new FakeVector3(a.x + amount, a.y + amount, a.z + amount);
+		}
+
+		public static FakeVector3 operator ++(FakeVector3 v)
+		{
+			return new FakeVector3(v.x + 1, v.y + 1, v.z + 1);
+		}
+
+		public static FakeVector3 operator --(FakeVector3 v)
+		{
+			return new FakeVector3(v.x - 1, v.y - 1, v.z - 1);
+		}
+
+		public static FakeVector3 operator -(FakeVector3 a, float amount)
+		{
+			return new FakeVector3(a.x - amount, a.y - amount, a.z - amount);
+		}
+
+		public static FakeVector3 operator *(FakeVector3 a, float amount)
+		{
+			return new FakeVector3(a.x * amount, a.y * amount, a.z * amount);
+		}
+
+		public static FakeVector3 operator /(FakeVector3 a, float amount)
+		{
+			if (amount == 0)
+				throw new DivideByZeroException("amount was 0");
+			return new FakeVector3(a.x / amount, a.y / amount, a.z / amount);
+		}
+
+	}
+
+	/// <summary>
+	/// Needs initialized from engine or test frameworks, as do any other types suffixed with "Adapter".
+	/// </summary>
+	public class Vector3Adapter<T>
+	{
+		private static IVector3Modifier vecMod;
+
+		private static IVector3Converter<T> converter;
+
+		public Vector3Adapter(IVector3Modifier m, IVector3Converter<T> engineVecType)
+		{
+			vecMod = m;
+			converter = engineVecType;
+		}
+
+		public static float Magnitude(FakeVector3 v)
+		{
+			return vecMod.Magnitude(v);
+		}
+	}
+
+	
+
+	public interface IVector3Modifier
+	{
+		float Magnitude(FakeVector3 v);
+
+		FakeVector3 Normalize(FakeVector3 v);
+	}
+
+	public class DisparityVector3Modifiers : IVector3Modifier
+	{
+		public float Magnitude(FakeVector3 v)
+		{
+			return (float)System.Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+		}
+
+		public FakeVector3 Normalize(FakeVector3 v)
+		{
+			float magnitude = Magnitude(v);
+			if (magnitude > 0)
+				return new FakeVector3(v.x / magnitude, v.y / magnitude, v.z / magnitude);
+
+			return FakeVector3.NullVector;
+		}
+	}
+
+	public interface IVector3Converter<T>
+	{
+		FakeVector3 ToFake(T t);
+		T FromFake(FakeVector3 fake);
 	}
 
 }

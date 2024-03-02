@@ -7,18 +7,18 @@ namespace Disparity.Unity
 		public UnityTransformProvider(Transform t)
 		{
 			transform = t;
-			position = new UnityVector3();
-			rotation = new UnityVector3();
-			scl = new UnityVector3();
+			position = new FakeVector3();
+			rotation = new FakeVector3();
+			scl = new FakeVector3();
 		}
 
 		public Transform transform;
 
-		public UnityVector3 position;
-		public UnityVector3 rotation;
-		public UnityVector3 scl;
+		public FakeVector3 position;
+		public FakeVector3 rotation;
+		public FakeVector3 scl;
 
-		public IVector3Provider pos
+		public FakeVector3 pos
 		{
 			get
 			{
@@ -35,8 +35,8 @@ namespace Disparity.Unity
 				transform.position = new Vector3(position.x, position.y, position.z);
 			}
 		}
-		public IVector3Provider rot { get { return rotation; } set { } }
-		public IVector3Provider scale { get { return scl; } set { } }
+		public FakeVector3 rot { get { return rotation; } set { } }
+		public FakeVector3 scale { get { return scl; } set { } }
 	}
 
 }
