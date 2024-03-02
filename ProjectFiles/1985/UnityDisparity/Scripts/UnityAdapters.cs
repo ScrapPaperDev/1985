@@ -6,11 +6,17 @@ namespace Disparity.Unity
 	public static class UnityAdapters
 	{
 
-		private static readonly IVector3Converter<Vector3> converter = new UnityVector3Converter();
+		private static readonly IVector3Converter<Vector3> converter;
+
+
+		static UnityAdapters()
+		{
+			converter = new UnityVector3Converter();
+			new Vector3Adapter<Vector3>(null, converter);
+		}
 
 		public static Vector4 ToUnityVector4(this FakeVector4 v4)
 		{
-			var a = new Vector3Adapter<Vector3>(null, converter);
 			return new Vector4(v4.x, v4.y, v4.z, v4.w);
 		}
 

@@ -10,6 +10,12 @@ namespace Disparity
 		float deltaTime { get; }
 	}
 
+	//change to destroyer and the other to destroyable
+	public interface IDestroyableTemp
+	{
+		void Destroy<T>(T obj) where T : class, IGameObject;
+	}
+
 	public interface IDestroyer
 	{
 		void Destroy();
@@ -20,6 +26,8 @@ namespace Disparity
 		T RandomRange(T min, T max);
 	}
 
+	//TODO: change name to ICreatable, since instantiation is more of an implementation of creation
+	// wehere alot of times we will be drawing from a pool or something
 	public interface IInstantiatable
 	{
 		void Instantiate(FakeVector3 pos);

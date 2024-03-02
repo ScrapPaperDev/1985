@@ -18,23 +18,17 @@ namespace Humble1985
 		private float speed;
 		private ITransformProvider transform;
 		private ITimeProvider time;
-		private FakeVector3 vec;
 
 		public Mover(float s, ITransformProvider t, ITimeProvider tim)
 		{
 			speed = s;
 			transform = t;
 			time = tim;
-			vec += t.pos;
 		}
 
 		public void Move()
 		{
-			//-- Make sure to update the vec with the engines latest transform.
-			//vec += new FakeVector3(transform.pos.x, transform.pos.y);
-
-			vec += new FakeVector3(0, speed * time.deltaTime);
-			transform.pos = vec;
+			transform.pos += new FakeVector3(0, speed * time.deltaTime);
 		}
 	}
 
@@ -56,7 +50,7 @@ namespace Humble1985
 		}
 	}
 
-	public class RespawnOffscreen : Humble1985.IOffscreenable
+	public class RespawnOffscreen : IOffscreenable
 	{
 		private ITransformProvider transform;
 

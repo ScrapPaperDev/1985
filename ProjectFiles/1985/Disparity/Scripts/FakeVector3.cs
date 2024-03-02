@@ -4,9 +4,9 @@ namespace Disparity
 {
 	public struct FakeVector3
 	{
-		public float x { get; set; }
-		public float y { get; set; }
-		public float z { get; set; }
+		public float x;
+		public float y;
+		public float z;
 
 		public FakeVector3(float x, float y)
 		{
@@ -60,9 +60,13 @@ namespace Disparity
 
 		public static FakeVector3 operator +(FakeVector3 v1, FakeVector3 v2)
 		{
-			return new FakeVector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
+			v1.x += v2.x;
+			v1.y += v2.y;
+			v1.z += v2.z;
+			return v1;
 		}
 
+		//TODO: profile these cause new is not needed
 		public static FakeVector3 operator -(FakeVector3 v1, FakeVector3 v2)
 		{
 			return new FakeVector3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
@@ -133,7 +137,7 @@ namespace Disparity
 		}
 	}
 
-	
+
 
 	public interface IVector3Modifier
 	{

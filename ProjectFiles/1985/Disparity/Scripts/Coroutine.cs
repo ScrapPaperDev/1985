@@ -244,4 +244,22 @@ namespace Disparity
 	}
 
 
+	public interface ISequencer
+	{
+		void PlaySequence(IEnumerator sequence);
+	}
+
+	public class Timeline<T> : ISequencer
+	{
+		public List<T> sequences;
+
+		public void PlaySequence(IEnumerator sequence)
+		{
+			//if this was unity, start coroutine
+
+			//if not unity use our implementation
+		}
+	}
+
+
 }
