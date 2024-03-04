@@ -1,4 +1,3 @@
-#define NET_3_5_SUBSET
 using System.Collections;
 using System;
 using System.Collections.Generic;
@@ -177,25 +176,6 @@ namespace Disparity
 		}
 
 
-
-		//TODO: move to extensions
-		public static bool TryPeek<T>(Stack<T> col, out T obj)
-		{
-#if NET_3_5_SUBSET
-			if (col == null || col.Count == 0)
-			{
-				obj = default(T);
-				return false;
-			}
-			else
-			{
-				obj = col.Peek();
-				return true;
-			}
-#else
-		return col.TryPeek(out obj);
-#endif
-		}
 
 
 	}

@@ -6,7 +6,8 @@
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>Disparity</AssemblyName>
     <RootNamespace>Disparity</RootNamespace>
-    <OutputType>Library</OutputType>    
+    <OutputType>Library</OutputType>
+    <DefineConstants>NET_35_SUBSET</DefineConstants>
   </PropertyGroup>
 
 </Project>
