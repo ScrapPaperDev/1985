@@ -61,7 +61,10 @@ namespace Disparity
 		FakeVector3 scale { get; set; }
 	}
 
-
+	public interface ITextureUpdatable
+	{
+		void UpdateTexture();
+	}
 
 
 	public interface IBindable

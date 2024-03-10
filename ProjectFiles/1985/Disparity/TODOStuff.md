@@ -1,5 +1,6 @@
 - Stuff I would like to do later
 
+- unit tests!!!
 - Implement basic serialization system as well as the [Data] attribute.
 - serializable objects with converters for each adapter layer plugin, for example as a prefab in unity, or scene in godot.
 - editor gui plugin support

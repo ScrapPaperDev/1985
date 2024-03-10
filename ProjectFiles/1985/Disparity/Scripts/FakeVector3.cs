@@ -22,8 +22,8 @@ namespace Disparity
 			this.z = z;
 		}
 
-		public static FakeVector3 NullVector { get { return new FakeVector3(0, 0, 0); } }
-		public static FakeVector3 FullVector { get { return new FakeVector3(1, 1, 1); } }
+		public static FakeVector3 Empty { get { return new FakeVector3(0, 0, 0); } }
+		public static FakeVector3 Full { get { return new FakeVector3(1, 1, 1); } }
 
 		public override bool Equals(object obj)
 		{
@@ -159,7 +159,7 @@ namespace Disparity
 			if (magnitude > 0)
 				return new FakeVector3(v.x / magnitude, v.y / magnitude, v.z / magnitude);
 
-			return FakeVector3.NullVector;
+			return FakeVector3.Empty;
 		}
 	}
 
