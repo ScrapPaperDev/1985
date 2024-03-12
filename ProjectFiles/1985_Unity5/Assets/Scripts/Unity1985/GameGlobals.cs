@@ -21,6 +21,15 @@ public class GameGlobals :MonoBehaviour
 
 	public GameObject playerPrefab;
 
+	public Renderer water;
+	public Texture2D classicWater;
+	public Texture2D modernWater;
+
+	public bool testModern;
+
+	public AudioClip classicBGM;
+	public AudioClip modernBGM;
+
 	private void Awake()
 	{
 		Application.targetFrameRate = 60;
@@ -35,6 +44,29 @@ public class GameGlobals :MonoBehaviour
 		var en4 = new EnemyWaveData(new UnityInstantiatable<GameObject>(enemy4), 32, 16);
 
 		new Game(en1, en2, en3, en4, UnityScheduler.instance, new UnityRandom(), new UnityInstantiatable<GameObject>(playerPrefab), GetComponent<IPresentable>(), new UnityCamWorldBoundaryProvider(), offscreenOffset);
+
+		var game = new GameSetup();
+
+		game.playerPlane = new UnityGameObject(playerPrefab);
+		game.instantiater = new UnityInstantiater();
+
+		game.enemyPlane1 = new UnityInstantiatable<GameObject>(enemy);
+		game.enemyPlane2 = new UnityInstantiatable<GameObject>(enemy2);
+		game.enemyPlane3 = new UnityInstantiatable<GameObject>(enemy3);
+		game.enemyPlane4 = new UnityInstantiatable<GameObject>(enemy4);
+
+		Game.modern = testModern;
+
+		var waterToUse = Game.modern ? modernWater : classicWater;
+
+		game.waterBG = new UnitySpriteTexture(water.GetComponent<Renderer>(), waterToUse);
+
+		game.SetupGame();
+
+		//TODO: this needs ot be moved to humble
+		var m = GetComponentInChildren<AudioSource>();
+		m.clip = Game.modern ? modernBGM : classicBGM;
+		m.Play();
 
 	}
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using Disparity;
 
 namespace Unity1985{
 public class SpriteTexture : MonoBehaviour
@@ -13,15 +14,9 @@ public class SpriteTexture : MonoBehaviour
 	private void OnValidate()
 	{
 		var rend = GetComponent<Renderer>();
-		new UnitySpriteTexture(rend, sprite).UpdateSprite();
+		new UnitySpriteTexture(rend, sprite).UpdateTexture();
 	}
 }
-
-public interface ISpriteTextureUpdater<T>
-{
-	void UpdateSprite(T t);
-}
-
 
 // Only need this if changing sprites is logical in the game. for now its just an editor time thing.
 public class HumbleSpriteTexture
@@ -29,7 +24,7 @@ public class HumbleSpriteTexture
 	
 }
 
-public class UnitySpriteTexture : ISpriteTextureUpdater<Texture2D>
+public class UnitySpriteTexture : ITextureUpdatable
 {
 	private Texture2D sprite;
 	private Renderer rend;
@@ -48,17 +43,17 @@ public class UnitySpriteTexture : ISpriteTextureUpdater<Texture2D>
 		this.sprite = sprite;
 	}
 
-	public void UpdateSprite()
+	public void UpdateTexture()
 	{		
 		rend.GetPropertyBlock(prop);
 		prop.SetTexture("_MainTex", sprite);
 		rend.SetPropertyBlock(prop);
 	}
 
-	public void UpdateSprite(Texture2D spr)
+	public void UpdateTexture(Texture2D spr)
 	{
 		sprite = spr;
-		UpdateSprite();
+		UpdateTexture();
 	}
 
 }

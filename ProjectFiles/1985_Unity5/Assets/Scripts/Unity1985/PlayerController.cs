@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 {
 	[SerializeField] private Transform player;
 	[SerializeField] private Bullet bullet;
+	[SerializeField] private Bullet bulletModern;
 	[SerializeField] private float shootThresh;
 	[SerializeField] private float speed;
 	[SerializeField] private float panelSize;

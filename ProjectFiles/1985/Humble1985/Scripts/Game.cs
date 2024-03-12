@@ -56,10 +56,11 @@ namespace Humble1985
 			down = world.bottomWorldPosition.y;
 			left = world.topWorldPosition.x;
 			right = world.bottomWorldPosition.x;
-			//		Debug.Log(up);
-			//		Debug.Log(down);
-			//		Debug.Log(left);
-			//		Debug.Log(right);
+			if (!modern)
+			{
+				left += 2;
+				right -= 2;
+			}
 		}
 
 		private void RespawnPlayer_OnLivesChanged(int obj)
@@ -92,6 +93,8 @@ namespace Humble1985
 			enemy3.enemy = e3;
 			enemy4.enemy = e4;
 		}
+
+
 
 	}
 

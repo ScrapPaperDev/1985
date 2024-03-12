@@ -36,6 +36,12 @@ namespace Humble1985
         {
             instantiater.Instantiate(playerPlane, FakeVector3.Empty);
             Game.game.UpdateEnemiesForGameMode(enemyPlane1, enemyPlane2, enemyPlane3, enemyPlane4);
+            waterBG.UpdateTexture();
+            island1.UpdateTexture();
+            island2.UpdateTexture();
+            island3.UpdateTexture();
+            hud.UpdateTexture();
+            gameOverPanel.UpdateTexture();
         }
 
 

@@ -11,7 +11,7 @@ public class SpriteFlipbook : MonoBehaviour
 	[SerializeField] private bool loop;
 	[SerializeField] private float frameRate = .2f;
 
-	private ISpriteTextureUpdater<Texture2D> spriteUpdater;
+	private UnitySpriteTexture spriteUpdater;
 	public Flipbook flipBook{ get; private set; }
 
 	private Disparity.Coroutine co;
@@ -35,12 +35,12 @@ public class SpriteFlipbook : MonoBehaviour
 
 	private void OnValidate()
 	{
-		new UnitySpriteTexture(GetComponent<Renderer>()).UpdateSprite(sprite[0]);
+		new UnitySpriteTexture(GetComponent<Renderer>()).UpdateTexture(sprite[0]);
 	}
 
 	private void Flip(int i)
 	{
-		spriteUpdater.UpdateSprite(sprite[i]);
+		spriteUpdater.UpdateTexture(sprite[i]);
 	}
 }
 }
